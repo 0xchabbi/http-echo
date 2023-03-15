@@ -14,6 +14,8 @@ variables:
   GOROOT: '/usr/local/go1.11' # Go installation path
   GOPATH: '$(system.defaultWorkingDirectory)/gopath' # Go workspace path
   modulePath: '$(GOPATH)/src/github.com/$(build.repository.name)' # Path to the module's code
+  GOOS: 'linux'
+  GOARCH: 'amd64'
 
 steps: 
 - task: GoTool@0
@@ -32,6 +34,8 @@ steps:
 - task: CopyFiles@2
   inputs:
     TargetFolder: '$(Build.ArtifactStagingDirectory)'
+
 - task: PublishBuildArtifacts@1
   inputs:
-     artifactName: drop
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    artifactName: drop
