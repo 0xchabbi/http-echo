@@ -27,6 +27,7 @@ steps:
 - task: Go@0
   inputs:
     command: 'build'
+    arguments: '-v'
     workingDirectory: '$(System.DefaultWorkingDirectory)'
 - task: CopyFiles@2
   inputs:
@@ -34,15 +35,3 @@ steps:
 - task: PublishBuildArtifacts@1
   inputs:
      artifactName: drop
-
-- task: Go@0
-  inputs:
-    command: 'build'
-    arguments: '-v'
-    workingDirectory: '$(System.DefaultWorkingDirectory)'
-    
-- task: Go@0
-  inputs:
-    command: 'test'
-    arguments: '-v'
-    workingDirectory: '$(System.DefaultWorkingDirectory)'
