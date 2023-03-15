@@ -30,7 +30,7 @@ steps:
   inputs:
     command: 'build'
     arguments: '-v'
-    workingDirectory: '$(System.DefaultWorkingDirectory)/http-echo'
+    workingDirectory: '$(System.DefaultWorkingDirectory)/main.go'
 - task: CopyFiles@2
   inputs:
     TargetFolder: '$(Build.ArtifactStagingDirectory)'
