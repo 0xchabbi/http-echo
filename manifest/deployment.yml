@@ -16,6 +16,10 @@ spec: ##DeploySpec
       containers:
         - name: web
           image: $(dockerregistry)/http-echo:latest  #myacrchabbi.azurecr.io/tailspin.spacegame.web/wwwroot:114 ##$(tag)dynamisch /  hashicorp/http-echo  / myacrchabbi.azurecr.io/myacrchabbi:latest
+          resources:
+            limits:
+              memory: 500Mi
+              cpu: 1
           args:
             - -text
             - "Bilal Test"
