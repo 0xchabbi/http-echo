@@ -56,3 +56,9 @@ Icon
 Network Trash Folder
 Temporary Items
 .apdisk
+
+**/*.terraform
+**/*terraform.*
+#state file und Terraform will be ignored.
+
+!**/*terraform.tfvars

@@ -1,0 +1,25 @@
+apiVersion : apps/v1
+kind: Deployment
+metadata:
+  name: web
+spec: ##DeploySpec
+  progressDeadlineSeconds: 60000
+  replicas: 1
+  selector:
+    matchLabels:
+      app: web
+  template:
+    metadata:
+      labels:
+        app: web
+    spec: ##Podspec
+      containers:
+        - name: web
+          image: $(ACRNAME)/http-echo:latest  #myacrchabbi.azurecr.io/tailspin.spacegame.web/wwwroot:114 ##$(tag)dynamisch /  hashicorp/http-echo  / myacrchabbi.azurecr.io/myacrchabbi:latest
+          args:
+            - -text
+            - "Bilal Test"
+          ports:
+          - containerPort: 5678
+
+##dynamisches Image url (DeployFile)

@@ -16,6 +16,12 @@ variables:
   modulePath: '$(GOPATH)/src/github.com/$(build.repository.name)' # Path to the module's code
   GOOS: 'linux'
   GOARCH: 'amd64'
+  ACRNAME: 'myacrchabbi'
+  AKSNAME: 'clusterchabbi'
+  DOCKERREGISTRY: 'akschabbi97'
+  KUBERNETESSERVICECONNECTION: 'kubechabbi'
+  AZURESERVICECONNECTION: 'testapp1'
+
 
 steps: 
 - task: GoTool@0
@@ -31,11 +37,75 @@ steps:
     command: 'build'
     arguments: '-o $(Build.BinariesDirectory) '
     workingDirectory: '$(System.DefaultWorkingDirectory)'
+
 - task: CopyFiles@2
   inputs:
     TargetFolder: '$(Build.ArtifactStagingDirectory)'
 
+
+
+- task: Docker@2
+  displayName: Build Docker image
+  inputs:
+    containerRegistry: '$(ACRNAME)'
+    repository: '$(ACRNAME) /http-echo'
+    command: 'build'
+    Dockerfile: '**/Dockerfile'
+    tags: |
+      $(Build.BuildId)
+      latest
+
+- task: Docker@2
+  displayName: Push Docker image to ACR
+  inputs:
+    containerRegistry: '$(ACRNAME)'
+    repository: '$(ACRNAME)/http-echo'
+    command: 'push'
+    Dockerfile: '**/Dockerfile'
+    tags: |
+      $(Build.BuildId)
+      latest
+
+- task: KubernetesManifest@0
+  displayName: Create imagePullSecret
+  inputs:
+    action: createSecret
+    secretName: $(imagePullSecret)
+    dockerRegistryEndpoint: '$(DOCKERREGISTRY)'
+    kubernetesServiceConnection: '$(KUBERNETESSERVICECONNECTION)'
+    namespace: 'default'
+
+- task: KubernetesManifest@0
+  displayName: Deploy to Kubernetes cluster
+  inputs:
+    action: deploy
+    kubernetesServiceConnection: '$(KUBERNETESSERVICECONNECTION)'
+    namespace: 'default'
+    manifests: |
+      $(Pipeline.Workspace)/s/manifests/deployment.yml
+      $(Pipeline.Workspace)/s/manifests/service.yml
+    imagePullSecrets: |
+      $(imagePullSecret)
+    # containers: |
+    #   $(RegistryName)/$(acrrepo):$(tag)
+
+- task: HelmInstaller@1
+  inputs:
+    helmVersionToInstall: 'latest'
+    checkLatestVersion: true
+
+- task: AzureCLI@2
+  inputs:
+    azureSubscription: $(AZURESERVICECONNECTION)
+    scriptType: 'bash'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+      az aks get-credentials --resource-group $(loadTestResourceGroup) --name 'clusterchabbi'
+      helm repo add haproxytech https://haproxytech.github.io/helm-charts
+      helm repo update
+      helm upgrade --install kubernetes-ingress haproxytech/kubernetes-ingress --create-namespace --namespace haproxy-controller --set controller.service.type=LoadBalancer
+  displayName: Deploy HA-Proxy-ingress
+
 - task: PublishBuildArtifacts@1
   inputs:
-    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-    artifactName: drop
+     artifactName: drop
