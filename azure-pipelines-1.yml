@@ -49,7 +49,7 @@ steps:
   displayName: Build Docker image
   inputs:
     containerRegistry: '$(dockerregistry)'
-    repository: '$(dockerregistry)/http-echo'
+    repository: '$(acrname)/http-echo'
     command: 'build'
     Dockerfile: 'Dockerfile'
     tags: |
@@ -60,7 +60,7 @@ steps:
   displayName: Push Docker image to ACR
   inputs:
     containerRegistry: '$(dockerregistry)'
-    repository: '$(dockerregistry)/http-echo'
+    repository: '$(acrname)/http-echo'
     command: 'push'
     Dockerfile: 'Dockerfile'
     tags: |
@@ -87,8 +87,8 @@ steps:
       $(Pipeline.Workspace)/s/manifest/service.yml
     imagePullSecrets: |
       $(imagePullSecret)
-    # containers: |
-    #   $(RegistryName)/$(acrrepo):$(tag)
+    containers: |
+      $(acrname)/http-echo:latest
 - task: PowerShell@2
   inputs:
     targetType: 'inline'
