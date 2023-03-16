@@ -47,8 +47,8 @@ steps:
 - task: Docker@2
   displayName: Build Docker image
   inputs:
-    containerRegistry: '$(ACRNAME)'
-    repository: '$(ACRNAME) /http-echo'
+    containerRegistry: '$(DOCKERREGISTRY)'
+    repository: '$(ACRNAME)/http-echo'
     command: 'build'
     Dockerfile: '**/Dockerfile'
     tags: |
@@ -58,7 +58,7 @@ steps:
 - task: Docker@2
   displayName: Push Docker image to ACR
   inputs:
-    containerRegistry: '$(ACRNAME)'
+    containerRegistry: '$(DOCKERREGISTRY)'
     repository: '$(ACRNAME)/http-echo'
     command: 'push'
     Dockerfile: '**/Dockerfile'
