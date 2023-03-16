@@ -50,7 +50,7 @@ steps:
     containerRegistry: '$(DOCKERREGISTRY)'
     repository: '$(ACRNAME)/http-echo'
     command: 'build'
-    Dockerfile: '**/Dockerfile'
+    Dockerfile: 'Dockerfile'
     tags: |
       $(Build.BuildId)
       latest
@@ -61,7 +61,7 @@ steps:
     containerRegistry: '$(DOCKERREGISTRY)'
     repository: '$(ACRNAME)/http-echo'
     command: 'push'
-    Dockerfile: '**/Dockerfile'
+    Dockerfile: 'Dockerfile'
     tags: |
       $(Build.BuildId)
       latest
