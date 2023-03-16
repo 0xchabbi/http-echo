@@ -90,6 +90,7 @@ steps:
     containers: |
       $(acrname)/http-echo:latest
 - task: PowerShell@2
+  displayName: Replace RepoTag automatically
   inputs:
     targetType: 'inline'
     script: |

@@ -1,7 +1,7 @@
 apiVersion : apps/v1
 kind: Deployment
 metadata:
-  name: web-deployment
+  name: web
 spec: ##DeploySpec
   progressDeadlineSeconds: 60000
   replicas: 1
@@ -15,7 +15,7 @@ spec: ##DeploySpec
     spec: ##Podspec
       containers:
         - name: web
-          image: http-echo:latest  #myacrchabbi.azurecr.io/tailspin.spacegame.web/wwwroot:114 ##$(tag)dynamisch /  hashicorp/http-echo  / myacrchabbi.azurecr.io/myacrchabbi:latest
+          image: myacrchabbi.azurecr.io/myacrchabbi/http-echo:latest  #myacrchabbi.azurecr.io/tailspin.spacegame.web/wwwroot:114 ##$(tag)dynamisch /  hashicorp/http-echo  / myacrchabbi.azurecr.io/myacrchabbi:latest
           resources:
             limits:
               memory: 500Mi
