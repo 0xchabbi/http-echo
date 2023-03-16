@@ -15,7 +15,7 @@ spec: ##DeploySpec
     spec: ##Podspec
       containers:
         - name: web
-          image: $(ACRNAME)/http-echo:latest  #myacrchabbi.azurecr.io/tailspin.spacegame.web/wwwroot:114 ##$(tag)dynamisch /  hashicorp/http-echo  / myacrchabbi.azurecr.io/myacrchabbi:latest
+          image: $(acrname)/http-echo:latest  #myacrchabbi.azurecr.io/tailspin.spacegame.web/wwwroot:114 ##$(tag)dynamisch /  hashicorp/http-echo  / myacrchabbi.azurecr.io/myacrchabbi:latest
           args:
             - -text
             - "Bilal Test"
