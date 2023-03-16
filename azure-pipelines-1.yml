@@ -16,6 +16,7 @@ variables:
   modulePath: '$(GOPATH)/src/github.com/$(build.repository.name)' # Path to the module's code
   GOOS: 'linux'
   GOARCH: 'amd64'
+  imagePullSecret: 'secret'
   acrname: 'myacrchabbi'
   aksname: 'clusterchabbi'
   dockerregistry: 'akschabbi97'
