@@ -83,8 +83,8 @@ steps:
     kubernetesServiceConnection: '$(kubernetesserviceconnection)'
     namespace: 'default'
     manifests: |
-      s/manifests/deployment.yml
-      s/manifests/service.yml
+      $(Pipeline.Workspace)/s/manifest/deployment.yml
+      $(Pipeline.Workspace)/s/manifest/service.yml
     imagePullSecrets: |
       $(imagePullSecret)
     # containers: |
