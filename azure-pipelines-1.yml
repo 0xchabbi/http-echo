@@ -49,7 +49,7 @@ steps:
   displayName: Build Docker image
   inputs:
     containerRegistry: '$(dockerregistry)'
-    repository: '$(acrname)/http-echo'
+    repository: '$(dockerregistry)/http-echo'
     command: 'build'
     Dockerfile: 'Dockerfile'
     tags: |
@@ -60,7 +60,7 @@ steps:
   displayName: Push Docker image to ACR
   inputs:
     containerRegistry: '$(dockerregistry)'
-    repository: '$(acrname)/http-echo'
+    repository: '$(dockerregistry)/http-echo'
     command: 'push'
     Dockerfile: 'Dockerfile'
     tags: |
