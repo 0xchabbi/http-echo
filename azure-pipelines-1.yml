@@ -132,21 +132,20 @@ steps:
     kubernetesServiceEndpoint: $(kubernetesserviceconnection)
     command: 'get'
     arguments: 'services --namespace haproxy-controller -o jsonpath={.status.loadBalancer.ingress[0].ip} kubernetes-ingress'
-    outputFormat: jsonpath='http://{.status.loadBalancer.ingress[0].ip} kubernetes-ingress'
+    outputFormat: jsonpath='http://{.status.loadBalancer.ingress[0].ip} kubernetes-ingress' ##show the external ip in a proper way
   displayName: 'Get external IP'
   name: GetExternalIP
-  # Define an output variable named 'ExternalIP'
-  # and set its value to the output of the previous task
-  # using the '$(taskName.outputVariableName)' syntax
-  # where 'taskName' is the name of the previous task,
-  # and 'outputVariableName' is the name of the output variable
-  # that the task produces
-  env:
-    ExternalIP: $[ format('{0}', dependencies.GetExternalIP.outputs['Kubernetes.GetExternalIP.externalIp']) ]
+- task: Bash@3
+  inputs:
+    targetType: 'inline'
+    script: |
+      externalIP=$(echo $(GetExternalIP.outputs.output) | tr -d "'")
+      curl -v $externalIP 
+    displayName: 'Test IP Address'
 
-- script: |
-    curl -v http://$(ExternalIP)
-  displayName: 'Test External IP with Curl'
+# - script: |
+#     curl -v http://$(ExternalIP)
+#   displayName: 'Test External IP with Curl'
 
 
 
