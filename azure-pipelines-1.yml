@@ -43,8 +43,8 @@ steps:
 - task: CopyFiles@2
   inputs:
     Contents: |
-      $(System.DefaultWorkingDirectory)/s/manifest/deployment.yml
-      $(System.DefaultWorkingDirectory)/s/manifest/service.yml
+      $(System.DefaultWorkingDirectory)/manifest/deployment.yml
+      $(System.DefaultWorkingDirectory)/manifest/service.yml
     TargetFolder: '$(Pipeline.Workspace)/s/manifest'
     #'$(Build.ArtifactStagingDirectory)'
 
