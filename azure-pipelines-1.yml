@@ -132,16 +132,37 @@ steps:
     kubernetesServiceEndpoint: $(kubernetesserviceconnection)
     command: 'get'
     arguments: 'services --namespace haproxy-controller -o jsonpath={.status.loadBalancer.ingress[0].ip} kubernetes-ingress'
-    outputFormat: jsonpath='http://{.status.loadBalancer.ingress[0].ip} kubernetes-ingress' ##show the external ip in a proper way
+    outputFormat: 'string' ##jsonpath='http://{.status.loadBalancer.ingress[0].ip} kubernetes-ingress' ##show the external ip in a proper way
   displayName: 'Get external IP'
   name: GetExternalIP
 - task: Bash@3
   inputs:
     targetType: 'inline'
     script: |
-      externalIP=$(echo $(GetExternalIP.outputs['Kubernetes.GetExternalIP.output']) | tr -d "'")
-      curl -v $(ExternalIP)
+      externalIP=$(echo $(GetExternalIP.outputs['value']))
+      curl -v $externalIP
     displayName: 'Test IP Address'
+
+# - task: Kubernetes@1
+#   inputs:
+#     connectionType: 'Azure Resource Manager'
+#     azureSubscriptionEndpoint: $(azureserviceconnection)
+#     azureResourceGroup: $(azureresourcegroup)
+#     kubernetesCluster: $(aksname)
+#     kubernetesServiceEndpoint: $(kubernetesserviceconnection)
+#     command: 'get'
+#     arguments: 'services --namespace haproxy-controller -o jsonpath={.status.loadBalancer.ingress[0].ip} kubernetes-ingress'
+#     outputFormat: 'string' # Use a simpler output format
+#   displayName: 'Get external IP'
+#   name: GetExternalIP
+
+# - task: Bash@3
+#   inputs:
+#     targetType: 'inline'
+#     script: |
+#        # test IP address
+#   displayName: 'Test IP Address'
+
 
 # - script: |
 #     curl -v http://$(ExternalIP)
