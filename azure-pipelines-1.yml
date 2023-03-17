@@ -132,6 +132,7 @@ steps:
     kubernetesServiceEndpoint: $(kubernetesserviceconnection)
     command: 'get'
     arguments: 'services --namespace haproxy-controller -o jsonpath={.status.loadBalancer.ingress[0].ip} kubernetes-ingress'
+    outputFormat: jsonpath='http://{.status.loadBalancer.ingress[0].ip} kubernetes-ingress'
   displayName: 'Get external IP'
   name: GetExternalIP
   # Define an output variable named 'ExternalIP'
