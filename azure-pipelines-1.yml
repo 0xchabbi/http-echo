@@ -45,7 +45,7 @@ steps:
     Contents: |
       $(System.DefaultWorkingDirectory)/manifest/deployment.yml
       $(System.DefaultWorkingDirectory)/manifest/service.yml
-    TargetFolder: '$(Pipeline.Workspace)/s/manifest'
+    TargetFolder: '$(Pipeline.Workspace)/manifest'
     #'$(Build.ArtifactStagingDirectory)'
 
 
