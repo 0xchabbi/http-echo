@@ -42,7 +42,11 @@ steps:
 
 - task: CopyFiles@2
   inputs:
-    TargetFolder: '$(Build.ArtifactStagingDirectory)'
+    Contents: |
+      $(System.DefaultWorkingDirectory)/s/manifest/deployment.yml
+      $(System.DefaultWorkingDirectory)/s/manifest/service.yml
+    TargetFolder: '$(Pipeline.Workspace)/s/manifest'
+    #'$(Build.ArtifactStagingDirectory)'
 
 
 
