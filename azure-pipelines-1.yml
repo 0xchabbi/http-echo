@@ -117,7 +117,7 @@ steps:
     scriptType: 'bash'
     scriptLocation: 'inlineScript'
     inlineScript: |
-      az aks get-credentials --resource-group $(loadTestResourceGroup) --name 'clusterchabbi'
+      az aks get-credentials --resource-group $(azureresourcegroup) --name $(aksname)
       helm repo add haproxytech https://haproxytech.github.io/helm-charts
       helm repo update
       helm upgrade --install kubernetes-ingress haproxytech/kubernetes-ingress --create-namespace --namespace haproxy-controller --set controller.service.type=LoadBalancer

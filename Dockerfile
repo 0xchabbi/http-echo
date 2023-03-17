@@ -20,7 +20,7 @@ COPY --from=build /app/http-echo /http-echo
 EXPOSE 5678
 
 # Set the default text to echo (can be overridden with ECHO_TEXT environment variable)
-ENV ECHO_TEXT="Bilal Test!"
+ENV ECHO_TEXT="Bilal Test"
 
 # Start the http-echo server when the container starts
 CMD ["/http-echo", "-listen=:5678", "-text=${ECHO_TEXT}"]
