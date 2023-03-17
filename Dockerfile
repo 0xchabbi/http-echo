@@ -9,6 +9,8 @@ COPY . .
 
 # Build the binary executable
 RUN CGO_ENABLED=0 go build -o http-echo .
+RUN go mod download
+
 
 # Create a minimal image with the binary executable
 FROM scratch
