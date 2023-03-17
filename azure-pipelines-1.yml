@@ -144,7 +144,7 @@ steps:
     ExternalIP: $[ format('{0}', dependencies.GetExternalIP.outputs['Kubernetes.GetExternalIP.externalIp']) ]
 
 - script: |
-    curl -v http://$(ExternalIP)/api/endpoint
+    curl -v http://$(ExternalIP)
   displayName: 'Test External IP with Curl'
 
 
