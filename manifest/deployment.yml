@@ -15,7 +15,7 @@ spec: ##DeploySpec
     spec: ##Podspec
       containers:
         - name: web
-          image: myacrchabbi.azurecr.io/myacrchabbi/http-echo:latest  #myacrchabbi.azurecr.io/tailspin.spacegame.web/wwwroot:114 ##$(tag)dynamisch /  hashicorp/http-echo  / myacrchabbi.azurecr.io/myacrchabbi:latest
+          image: myacrchabbi.azurecr.io/myacrchabbi/http-echo:237  #myacrchabbi.azurecr.io/tailspin.spacegame.web/wwwroot:114 ##$(tag)dynamisch /  hashicorp/http-echo  / myacrchabbi.azurecr.io/myacrchabbi:latest
           resources:
             limits:
               memory: 200Mi
