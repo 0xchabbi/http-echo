@@ -89,8 +89,8 @@ steps:
     kubernetesServiceConnection: '$(kubernetesserviceconnection)'
     namespace: 'default'
     manifests: |
-      $(Pipeline.Workspace)/s/manifest/deployment.yml
-      $(Pipeline.Workspace)/s/manifest/service.yml
+      $(Pipeline.Workspace)/manifest/deployment.yml
+      $(Pipeline.Workspace)/manifest/service.yml
     # containerRegistry: 'registryName=$(acrname);connectionString=$(acrconnectionstring)'
     # imagePullSecrets: '$(imagePullSecret)'
     imagePullSecrets: |
