@@ -91,10 +91,11 @@ steps:
     manifests: |
       $(Pipeline.Workspace)/s/manifest/deployment.yml
       $(Pipeline.Workspace)/s/manifest/service.yml
-    imagePullSecrets: |
-      $(imagePullSecret)
-    containers: |
-      $(acrname)/http-echo:latest
+    imagePullSecrets: $(imagePullSecret)
+    containers:
+    - name: web
+      image: myacrchabbi.azurecr.io/myacrchabbi/http-echo:latest
+
 - task: PowerShell@2
   displayName: Replace RepoTag automatically
   inputs:
