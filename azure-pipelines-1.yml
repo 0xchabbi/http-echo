@@ -45,7 +45,7 @@ steps:
     Contents: |
       $(System.DefaultWorkingDirectory)/manifest/deployment.yml
       $(System.DefaultWorkingDirectory)/manifest/service.yml
-    TargetFolder: '$(Pipeline.Workspace)/manifest'
+    TargetFolder: '$(Pipeline.Workspace)/s/manifest'
     #'$(Build.ArtifactStagingDirectory)'
 
 
@@ -89,8 +89,8 @@ steps:
     kubernetesServiceConnection: '$(kubernetesserviceconnection)'
     namespace: 'default'
     manifests: |
-      $(Pipeline.Workspace)/manifest/deployment.yml
-      $(Pipeline.Workspace)/manifest/service.yml
+      $(Pipeline.Workspace)/s/manifest/deployment.yml
+      $(Pipeline.Workspace)/s/manifest/service.yml
     # containerRegistry: 'registryName=$(acrname);connectionString=$(acrconnectionstring)'
     # imagePullSecrets: '$(imagePullSecret)'
     imagePullSecrets: |
