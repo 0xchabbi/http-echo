@@ -53,7 +53,7 @@ steps:
 - task: Docker@2
   displayName: Build Docker image
   inputs:
-    containerRegistry: '$(dockerregistry)'
+    containerRegistry: $(dockerregistry)
     repository: '$(acrname)/http-echo'
     command: 'build'
     Dockerfile: 'Dockerfile'
@@ -65,7 +65,7 @@ steps:
 - task: Docker@2
   displayName: Push Docker image to ACR
   inputs:
-    containerRegistry: '$(dockerregistry)'
+    containerRegistry: $(dockerregistry)
     repository: '$(acrname)/http-echo'
     command: 'push'
     Dockerfile: 'Dockerfile'
@@ -78,8 +78,8 @@ steps:
   inputs:
     action: createSecret
     secretName: $(imagePullSecret)
-    dockerRegistryEndpoint: '$(dockerregistry)'
-    kubernetesServiceConnection: '$(kubernetesserviceconnection)'
+    dockerRegistryEndpoint: $(dockerregistry)
+    kubernetesServiceConnection: $(kubernetesserviceconnection)
     namespace: 'default'
 
 - task: KubernetesManifest@0
@@ -126,23 +126,41 @@ steps:
 - task: Kubernetes@1
   inputs:
     connectionType: 'Azure Resource Manager'
-    azureSubscriptionEndpoint: '$(azureserviceconnection)'
+    azureSubscriptionEndpoint: $(azureserviceconnection)
     azureResourceGroup: $(azureresourcegroup)
-    kubernetesCluster: '$(aksname)'
-    kubernetesServiceEndpoint: '$(kubernetesserviceconnection)'
+    kubernetesCluster: $(aksname)
+    kubernetesServiceEndpoint: $(kubernetesserviceconnection)
     command: 'get'
     arguments: 'services --namespace haproxy-controller -o jsonpath={.status.loadBalancer.ingress[0].ip} kubernetes-ingress'
   displayName: 'Get external IP'
+  name: GetExternalIP
+  # Define an output variable named 'ExternalIP'
+  # and set its value to the output of the previous task
+  # using the '$(taskName.outputVariableName)' syntax
+  # where 'taskName' is the name of the previous task,
+  # and 'outputVariableName' is the name of the output variable
+  # that the task produces
+  env:
+    ExternalIP: $[ format('{0}', dependencies.GetExternalIP.outputs['Kubernetes.GetExternalIP.externalIp']) ]
+
+- task: Curl@
+  inputs:
+    # Pass the output variable 'ExternalIP' as an argument to the 'curl' command
+    arguments: '-v http://$(ExternalIP)/api/endpoint'
+  displayName: 'Test External IP with Curl'
+
+
+
 
 # - script: |
 #     response=$(curl -v http://20.31.56.182/)
 #     echo "$response"
 #   displayName: 'Curl Test'
-- script: |
-    externalIP=$(echo $(getExternalIP.outputs['stdout']) | tr -d '[:space:]')
-    response=$(curl -v http://$externalIP/)
-    echo "$response"
-  displayName: 'Curl Test'
+# - script: |
+#     externalIP=$(echo $(getExternalIP.outputs['stdout']) | tr -d '[:space:]')
+#     response=$(curl -v http://$externalIP/)
+#     echo "$response"
+#   displayName: 'Curl Test'
 
 - task: PublishBuildArtifacts@1
   inputs:
