@@ -20,9 +20,10 @@ spec: ##DeploySpec
             limits:
               memory: 200Mi
               cpu: 1
-          args:
-            - -text
-            - "Bilal Test"
+          command: ["/http-echo"]
+          args: ["-text", "Bilal Test"]
+            # - -text
+            # - "Bilal Test"
           ports:
           - containerPort: 5678
 
