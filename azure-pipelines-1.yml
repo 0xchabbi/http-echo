@@ -139,8 +139,8 @@ steps:
   inputs:
     targetType: 'inline'
     script: |
-      externalIP=$(echo $(GetExternalIP.outputs.output) | tr -d "'")
-      curl -v $externalIP 
+      externalIP=$(echo $(GetExternalIP.outputs['Kubernetes.GetExternalIP.output']) | tr -d "'")
+      curl -v $(ExternalIP)
     displayName: 'Test IP Address'
 
 # - script: |
