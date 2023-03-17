@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: web
 spec: ##DeploySpec
-  progressDeadlineSeconds: 60000
+  progressDeadlineSeconds: 70000
   replicas: 1
   selector:
     matchLabels:
