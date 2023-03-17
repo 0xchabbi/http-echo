@@ -10,10 +10,10 @@ pool:
   vmImage: ubuntu-latest
 
 variables:
-  GOBIN:  '$(GOPATH)/bin' # Go binaries path
-  GOROOT: '/usr/local/go1.11' # Go installation path
-  GOPATH: '$(system.defaultWorkingDirectory)/gopath' # Go workspace path
-  modulePath: '$(GOPATH)/src/github.com/$(build.repository.name)' # Path to the module's code
+  # GOBIN:  '$(GOPATH)/bin' # Go binaries path
+  # GOROOT: '/usr/local/go1.11' # Go installation path
+  # GOPATH: '$(system.defaultWorkingDirectory)/gopath' # Go workspace path
+  # modulePath: '$(GOPATH)/src/github.com/$(build.repository.name)' # Path to the module's code
   GOOS: 'linux'
   GOARCH: 'amd64'
   imagePullSecret: 'secret'
@@ -22,6 +22,7 @@ variables:
   dockerregistry: 'akschabbi97'
   kubernetesserviceconnection: 'kubechabbi'
   azureserviceconnection: 'testapp1'
+  azureresourcegroup: 'akschabbi'
 
 
 steps: 
@@ -52,6 +53,7 @@ steps:
     repository: '$(acrname)/http-echo'
     command: 'build'
     Dockerfile: 'Dockerfile'
+    buildContext: '$(System.DefaultWorkingDirectory)'
     tags: |
       $(Build.BuildId)
       latest
@@ -119,15 +121,20 @@ steps:
   inputs:
     connectionType: 'Azure Resource Manager'
     azureSubscriptionEndpoint: '$(azureserviceconnection)'
-    azureResourceGroup: $(loadTestResourceGroup)
+    azureResourceGroup: $(azureresourcegroup)
     kubernetesCluster: '$(aksname)'
     kubernetesServiceEndpoint: '$(kubernetesserviceconnection)'
     command: 'get'
     arguments: 'services --namespace haproxy-controller -o jsonpath={.status.loadBalancer.ingress[0].ip} kubernetes-ingress'
   displayName: 'Get external IP'
 
+# - script: |
+#     response=$(curl -v http://20.31.56.182/)
+#     echo "$response"
+#   displayName: 'Curl Test'
 - script: |
-    response=$(curl -v http://20.31.56.182/)
+    externalIP=$(echo $(getExternalIP.outputs['stdout']) | tr -d '[:space:]')
+    response=$(curl -v http://$externalIP/)
     echo "$response"
   displayName: 'Curl Test'
 
