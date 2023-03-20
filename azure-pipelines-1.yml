@@ -87,7 +87,7 @@ steps:
   inputs:
     targetType: 'inline'
     script: |
-      $image = "$(acrname)/http-echo:$(Build.BuildId)"
+      $image = "$(acrname)/http-echo:latest"
       (Get-Content -Path '$(Pipeline.Workspace)/s/manifest/deployment.yml') -replace 'image: myacrchabbi.azurecr.io/http-echo:$(Build.BuildId)', ('image: ' + $image) | Set-Content -Path '$(Pipeline.Workspace)/s/manifest/deployment.yml'
 
 
@@ -133,34 +133,45 @@ steps:
     kubernetesCluster: $(aksname)
     kubernetesServiceEndpoint: $(kubernetesserviceconnection)
     command: 'get'
+    New-Item: $(Build.SourcesDirectory)\test1.txt
+    Outfile: $(Build.SourcesDirectory)\test1.txt
     arguments: 'services --namespace haproxy-controller -o jsonpath={.status.loadBalancer.ingress[0].ip} kubernetes-ingress'
     outputFormat: jsonpath='http://{.status.loadBalancer.ingress[0].ip} kubernetes-ingress' ##show the external ip in a proper way
   displayName: 'Get external IP'
   name: GetExternalIP
 
-- task: PowerShell@2
+- task:
   inputs:
     targetType: 'inline'
     script: |
-      $output = jsonpath='http://{.status.loadBalancer.ingress[0].ip} kubernetes-ingress'
+      $externalIP = Get-Content -Path $(Build.SourcesDirectory)\test1.txt
+      response=$(curl -v http://$(ExternalIP)/)
+      echo "$response"
+  displayName: 'Curl Test'
 
-      # Extract the IP address and the service name from the output
-      $ip_address, $service_name = $output.Split(' ')
+# - task: PowerShell@2
+  # inputs:
+  #   targetType: 'inline'
+  #   script: |
+  #     $output = jsonpath='http://{.status.loadBalancer.ingress[0].ip} kubernetes-ingress'
 
-      # Test the IP address
-      try {
-          $response = Invoke-WebRequest -Uri "http://$ip_address"
-          if ($response.StatusCode -eq 200) {
-              Write-Output "The IP address $ip_address for service $service_name is working"
-          }
-          else {
-              Write-Output "The IP address $ip_address for service $service_name is not working"
-          }
-      }
-      catch {
-          Write-Output "Failed to connect to IP address $ip_address for service $service_name"
-      }
-  displayName: 'Test External IP'
+  #     # Extract the IP address and the service name from the output
+  #     $ip_address, $service_name = $output.Split(' ')
+
+  #     # Test the IP address
+  #     try {
+  #         $response = Invoke-WebRequest -Uri "http://$ip_address"
+  #         if ($response.StatusCode -eq 200) {
+  #             Write-Output "The IP address $ip_address for service $service_name is working"
+  #         }
+  #         else {
+  #             Write-Output "The IP address $ip_address for service $service_name is not working"
+  #         }
+  #     }
+  #     catch {
+  #         Write-Output "Failed to connect to IP address $ip_address for service $service_name"
+  #     }
+  # displayName: 'Test External IP'
 
 # - task: Bash@3
 #   inputs:
@@ -198,12 +209,8 @@ steps:
 
 
 # - script: |
+
 #     response=$(curl -v http://20.31.56.182/)
-#     echo "$response"
-#   displayName: 'Curl Test'
-# - script: |
-#     externalIP=$(echo $(getExternalIP.outputs['stdout']) | tr -d '[:space:]')
-#     response=$(curl -v http://$externalIP/)
 #     echo "$response"
 #   displayName: 'Curl Test'
 
