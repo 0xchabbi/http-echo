@@ -60,7 +60,7 @@ steps:
     Dockerfile: 'Dockerfile'
     buildContext: '$(System.DefaultWorkingDirectory)'
     tags: |
-      $(tag)
+      latest
 
 
 - task: Docker@2
@@ -71,7 +71,7 @@ steps:
     command: 'push'
     Dockerfile: 'Dockerfile'
     tags: |
-      $(tag)
+      latest
 
 - task: KubernetesManifest@0
   displayName: Create imagePullSecret
@@ -87,8 +87,8 @@ steps:
   inputs:
     targetType: 'inline'
     script: |
-      $image = "$(acrname)/http-echo:$(tag)"
-      (Get-Content -Path '$(Pipeline.Workspace)/s/manifest/deployment.yml') -replace 'image: myacrchabbi.azurecr.io/http-echo:$(Build.BuildId)', ('image: ' + $image) | Set-Content -Path '$(Pipeline.Workspace)/s/manifest/deployment.yml'
+      $image = "$(acrname)/http-echo:latest"
+      (Get-Content -Path '$(Pipeline.Workspace)/s/manifest/deployment.yml') -replace 'image: myacrchabbi.azurecr.io/http-echo:latest', ('image: ' + $image) | Set-Content -Path '$(Pipeline.Workspace)/s/manifest/deployment.yml'
 
 
 - task: KubernetesManifest@0
