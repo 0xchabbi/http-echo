@@ -140,7 +140,7 @@ steps:
   displayName: 'Get external IP'
   name: GetExternalIP
 
-- task:
+- task: PowerShell@2
   inputs:
     targetType: 'inline'
     script: |
