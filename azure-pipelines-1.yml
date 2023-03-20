@@ -23,6 +23,7 @@ variables:
   kubernetesserviceconnection: 'kubechabbi'
   azureserviceconnection: 'testapp1'
   azureresourcegroup: 'akschabbi'
+  tag: 'latest'
 
 
 steps: 
@@ -59,8 +60,8 @@ steps:
     Dockerfile: 'Dockerfile'
     buildContext: '$(System.DefaultWorkingDirectory)'
     tags: |
+      $(tag)
       $(Build.BuildId)
-      latest
 
 - task: Docker@2
   displayName: Push Docker image to ACR
@@ -70,8 +71,8 @@ steps:
     command: 'push'
     Dockerfile: 'Dockerfile'
     tags: |
+      $(tag)
       $(Build.BuildId)
-      latest
 
 - task: KubernetesManifest@0
   displayName: Create imagePullSecret
@@ -87,7 +88,7 @@ steps:
   inputs:
     targetType: 'inline'
     script: |
-      $image = "$(acrname)/http-echo:latest"
+      $image = "$(acrname)/http-echo:$(tag)"
       (Get-Content -Path '$(Pipeline.Workspace)/s/manifest/deployment.yml') -replace 'image: myacrchabbi.azurecr.io/http-echo:$(Build.BuildId)', ('image: ' + $image) | Set-Content -Path '$(Pipeline.Workspace)/s/manifest/deployment.yml'
 
 
@@ -106,6 +107,7 @@ steps:
       $(imagePullSecret)
     containers: |
       $(acrname)/http-echo:$(tag)
+      $(acrname)/http-echo:$(Build.BuildId)
 
 
 - task: HelmInstaller@1
