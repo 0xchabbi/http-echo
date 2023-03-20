@@ -142,7 +142,7 @@ steps:
   inputs:
     targetType: 'inline'
     script: |
-      $output = Get-Content "http://{.status.loadBalancer.ingress[0].ip} kubernetes-ingress" | ConvertFrom-Json
+      $output = jsonpath='http://{.status.loadBalancer.ingress[0].ip} kubernetes-ingress'
 
       # Extract the IP address and the service name from the output
       $ip_address, $service_name = $output.Split(' ')
