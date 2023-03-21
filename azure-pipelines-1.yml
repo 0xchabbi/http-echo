@@ -24,18 +24,21 @@ steps:
     provider: 'azurerm'
     command: 'init'
     workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
+    backendserviceArm: '$(System.DefaultWorkingDirectory)/terraform'
 - task: TerraformTaskV1@0
   displayName: 'Validate Terraform'
   inputs:
     provider: 'azurerm'
     command: 'validate'
     workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
+    backendserviceArm: '$(System.DefaultWorkingDirectory)/terraform'
 - task: TerraformTaskV1@0
   displayName: 'Apply Terraform'
   inputs:
     provider: 'azurerm'
     command: 'apply'
     workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
+    backendserviceArm: '$(System.DefaultWorkingDirectory)/terraform'
     azureserviceconnection: '$(azureserviceconnection)'
 
 - task: GoTool@0
