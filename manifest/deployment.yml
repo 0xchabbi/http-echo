@@ -15,7 +15,7 @@ spec: ##DeploySpec
     spec: ##Podspec
       containers:
         - name: web
-          image: myacrchabbi.azurecr.io/myacrchabbi/http-echo:${IMAGE_TAG}  #myacrchabbi.azurecr.io/tailspin.spacegame.web/wwwroot:114 ##$(tag)dynamisch /  hashicorp/http-echo  / myacrchabbi.azurecr.io/myacrchabbi:latest
+          image: myacrchabbi.azurecr.io/myacrchabbi/http-echo:$(Build.BuildId)  #myacrchabbi.azurecr.io/tailspin.spacegame.web/wwwroot:114 ##$(tag)dynamisch /  hashicorp/http-echo  / myacrchabbi.azurecr.io/myacrchabbi:latest
           resources:
             limits:
               memory: 200Mi
@@ -26,9 +26,9 @@ spec: ##DeploySpec
             # - "Bilal Test"
           ports:
           - containerPort: 5678
-          env:
-            - name: IMAGE_TAG
-              value: latest
+          # env:
+          #   - name: IMAGE_TAG
+          #     value: latest
 
 ##dynamisches Image url (DeployFile)
 ---
