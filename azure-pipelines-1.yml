@@ -149,7 +149,6 @@ steps:
     outputFormat: jsonpath='http://{.status.loadBalancer.ingress[0].ip} kubernetes-ingress' ##show the external ip in a proper way
   displayName: 'Get external IP'
   name: GetExternalIP
-  variables: extIP
 
 - task: PowerShell@2
   inputs:
