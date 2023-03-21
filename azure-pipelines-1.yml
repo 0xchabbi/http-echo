@@ -102,9 +102,7 @@ steps:
     kubernetesServiceConnection: '$(kubernetesserviceconnection)'
     namespace: 'default'
     rolloutStatusTimeout: 5
-    manifests: |
-      $(Pipeline.Workspace)/s/manifest/deployment.yml
-      $(Pipeline.Workspace)/s/manifest/service.yml
+    arguments: deployment web
 
 - task: KubernetesManifest@0
   displayName: Deploy to Kubernetes cluster
