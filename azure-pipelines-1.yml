@@ -95,6 +95,16 @@ steps:
    envsubst < $(Pipeline.Workspace)/s/manifest/deployment.yml.template >  $(Pipeline.Workspace)/s/manifest/deployment.yml
   displayName: 'Script task'
 
+- task: KubernetesManifest@0
+  displayName: Delete to Kubernetes cluster
+  inputs:
+    action: delete
+    kubernetesServiceConnection: '$(kubernetesserviceconnection)'
+    namespace: 'default'
+    rolloutStatusTimeout: 5
+    manifests: |
+      $(Pipeline.Workspace)/s/manifest/deployment.yml
+      $(Pipeline.Workspace)/s/manifest/service.yml
 
 - task: KubernetesManifest@0
   displayName: Deploy to Kubernetes cluster
