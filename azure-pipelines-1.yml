@@ -1,8 +1,3 @@
-# Go
-# Build your Go project.
-# Add steps that test, save build artifacts, deploy, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/languages/go
-
 trigger:
 - main
 
@@ -10,10 +5,6 @@ pool:
   vmImage: ubuntu-latest
 
 variables:
-  # GOBIN:  '$(GOPATH)/bin' # Go binaries path
-  # GOROOT: '/usr/local/go1.11' # Go installation path
-  # GOPATH: '$(system.defaultWorkingDirectory)/gopath' # Go workspace path
-  # modulePath: '$(GOPATH)/src/github.com/$(build.repository.name)' # Path to the module's code
   GOOS: 'linux'
   GOARCH: 'amd64'
   imagePullSecret: 'secret'
@@ -25,7 +16,28 @@ variables:
   azureresourcegroup: 'akschabbi'
 
 
+
 steps: 
+- task: TerraformTaskV1@0
+  displayName: 'Init Terraform'
+  inputs:
+    provider: 'azurerm'
+    command: 'init'
+    workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
+- task: TerraformTaskV1@0
+  displayName: 'Validate Terraform'
+  inputs:
+    provider: 'azurerm'
+    command: 'validate'
+    workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
+- task: TerraformTaskV1@0
+  displayName: 'Apply Terraform'
+  inputs:
+    provider: 'azurerm'
+    command: 'apply'
+    workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
+    azureserviceconnection: '$(azureserviceconnection)'
+
 - task: GoTool@0
   inputs:
     version: '1.19'
@@ -46,9 +58,6 @@ steps:
       $(System.DefaultWorkingDirectory)/manifest/deployment.yml
       $(System.DefaultWorkingDirectory)/manifest/service.yml
     TargetFolder: '$(Pipeline.Workspace)/s/manifest'
-    #'$(Build.ArtifactStagingDirectory)'
-
-
 
 - task: Docker@2
   displayName: Build Docker image
@@ -82,14 +91,6 @@ steps:
     dockerRegistryEndpoint: $(dockerregistry)
     kubernetesServiceConnection: $(kubernetesserviceconnection)
     namespace: 'default'
-
-# - task: PowerShell@2
-#   displayName: Replace RepoTag automatically
-#   inputs:
-#     targetType: 'inline'
-#     script: |
-#       $image = "$(acrname)/http-echo:latest"
-#       (Get-Content -Path '$(Pipeline.Workspace)/s/manifest/deployment.yml') -replace 'image: myacrchabbi.azurecr.io/http-echo:latest', ('image: ' + $image) | Set-Content -Path '$(Pipeline.Workspace)/s/manifest/deployment.yml'
 
 - script: |
    envsubst < $(Pipeline.Workspace)/s/manifest/deployment.yml.template >  $(Pipeline.Workspace)/s/manifest/deployment.yml
@@ -157,71 +158,6 @@ steps:
     script: |
       curl -v http://${GETEXTERNALIP_KUBECTLOUTPUT}
   displayName: 'Curl Test'
-
-# - task: PowerShell@2
-  # inputs:
-  #   targetType: 'inline'
-  #   script: |
-  #     $output = jsonpath='http://{.status.loadBalancer.ingress[0].ip} kubernetes-ingress'
-
-  #     # Extract the IP address and the service name from the output
-  #     $ip_address, $service_name = $output.Split(' ')
-
-  #     # Test the IP address
-  #     try {
-  #         $response = Invoke-WebRequest -Uri "http://$ip_address"
-  #         if ($response.StatusCode -eq 200) {
-  #             Write-Output "The IP address $ip_address for service $service_name is working"
-  #         }
-  #         else {
-  #             Write-Output "The IP address $ip_address for service $service_name is not working"
-  #         }
-  #     }
-  #     catch {
-  #         Write-Output "Failed to connect to IP address $ip_address for service $service_name"
-  #     }
-  # displayName: 'Test External IP'
-
-# - task: Bash@3
-#   inputs:
-#     targetType: 'inline'
-#     script: |
-#       externalIP=$(echo $(GetExternalIP.outputs['value']))
-#       curl -v $externalIP
-#     displayName: 'Test IP Address'
-
-# - task: Kubernetes@1
-#   inputs:
-#     connectionType: 'Azure Resource Manager'
-#     azureSubscriptionEndpoint: $(azureserviceconnection)
-#     azureResourceGroup: $(azureresourcegroup)
-#     kubernetesCluster: $(aksname)
-#     kubernetesServiceEndpoint: $(kubernetesserviceconnection)
-#     command: 'get'
-#     arguments: 'services --namespace haproxy-controller -o jsonpath={.status.loadBalancer.ingress[0].ip} kubernetes-ingress'
-#     outputFormat: 'string' # Use a simpler output format
-#   displayName: 'Get external IP'
-#   name: GetExternalIP
-
-# - task: Bash@3
-#   inputs:
-#     targetType: 'inline'
-#     script: |
-#        # test IP address
-#   displayName: 'Test IP Address'
-
-
-# - script: |
-#     curl -v http://$(ExternalIP)
-#   displayName: 'Test External IP with Curl'
-
-
-
-# - script: |
-
-#     response=$(curl -v http://20.31.56.182/)
-#     echo "$response"
-#   displayName: 'Curl Test'
 
 - task: PublishBuildArtifacts@1
   inputs:
