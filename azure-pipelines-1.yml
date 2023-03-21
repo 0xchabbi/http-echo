@@ -145,16 +145,14 @@ steps:
     kubernetesCluster: $(aksname)
     kubernetesServiceEndpoint: $(kubernetesserviceconnection)
     command: 'get'
-    arguments: 'services --namespace haproxy-controller -o jsonpath={.status.loadBalancer.ingress[0].ip} kubernetes-ingress'
-    # outputFormat: jsonpath='http://{.status.loadBalancer.ingress[0].ip} kubernetes-ingress' ##show the external ip in a proper way
+    arguments: 'services --namespace haproxy-controller kubernetes-ingress'
+    outputFormat: jsonpath='{.status.loadBalancer.ingress[0].ip}' ##show the external ip in a proper way
   displayName: 'Get external IP'
   name: GetExternalIP
 
-- task: PowerShell@2
-  inputs:
-    targetType: 'inline'
-    script: |
-      env | sort
+
+- script: |
+    env | sort
   displayName: 'Curl Test'
 
 # - task: PowerShell@2
