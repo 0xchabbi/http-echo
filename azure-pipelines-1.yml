@@ -152,14 +152,10 @@ steps:
 
 
 - task: Bash@3
-  env:
-    myIP: 20.31.202.196
   inputs: 
     targetType: 'inline'
     script: |
       curl -v http://${GETEXTERNALIP_KUBECTLOUTPUT}
-      curl -v http://${myIP}
-      curl -V
   displayName: 'Curl Test'
 
 # - task: PowerShell@2
