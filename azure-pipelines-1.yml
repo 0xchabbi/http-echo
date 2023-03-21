@@ -91,7 +91,10 @@ steps:
 #       $image = "$(acrname)/http-echo:latest"
 #       (Get-Content -Path '$(Pipeline.Workspace)/s/manifest/deployment.yml') -replace 'image: myacrchabbi.azurecr.io/http-echo:latest', ('image: ' + $image) | Set-Content -Path '$(Pipeline.Workspace)/s/manifest/deployment.yml'
 
-- template: s/manifest/deployment.yml
+- script: |
+   env | sort 
+  displayName: 'Script task'
+
 
 - task: KubernetesManifest@0
   displayName: Deploy to Kubernetes cluster
