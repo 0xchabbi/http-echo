@@ -23,22 +23,27 @@ steps:
   inputs:
     provider: 'azurerm'
     command: 'init'
+    commandOptions: '-input=false -backend=false'
     workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
-    backendserviceArm: '$(System.DefaultWorkingDirectory)/terraform'
+    backendserviceArm: '$(System.DefaultWorkingDirectory)\Users\nis-bilal\http_echo\http-echo\terraform\providers.tf'
+    backendAzureRmResourceGroupName: 'N/A'
+    backendAzureRmStorageAccountName: 'N/A'
+    backendAzureRmContainerName: 'N/A'
+    backendAzureRmKey: 'N/A'
 - task: TerraformTaskV1@0
   displayName: 'Validate Terraform'
   inputs:
     provider: 'azurerm'
     command: 'validate'
     workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
-    backendserviceArm: '$(System.DefaultWorkingDirectory)/terraform'
+    # backendserviceArm: '$(System.DefaultWorkingDirectory)/terraform'
 - task: TerraformTaskV1@0
   displayName: 'Apply Terraform'
   inputs:
     provider: 'azurerm'
     command: 'apply'
     workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
-    backendserviceArm: '$(System.DefaultWorkingDirectory)/terraform'
+    # backendserviceArm: '$(System.DefaultWorkingDirectory)/terraform'
     azureserviceconnection: '$(azureserviceconnection)'
 
 - task: GoTool@0
