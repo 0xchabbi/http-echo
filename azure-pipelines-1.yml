@@ -102,6 +102,7 @@ steps:
     action: deploy
     kubernetesServiceConnection: '$(kubernetesserviceconnection)'
     namespace: 'default'
+    rolloutStatusTimeout: 5
     manifests: |
       $(Pipeline.Workspace)/s/manifest/deployment.yml
       $(Pipeline.Workspace)/s/manifest/service.yml
