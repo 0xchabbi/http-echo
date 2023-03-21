@@ -151,8 +151,11 @@ steps:
   name: GetExternalIP
 
 
-- script: |
-    curl -v http://${GETEXTERNALIP_KUBECTLOUTPUT}
+- task: Bash@3
+  inputs:
+    targetType: 'inline'
+    script: |
+      curl -v http://${GETEXTERNALIP_KUBECTLOUTPUT}
   displayName: 'Curl Test'
 
 # - task: PowerShell@2
