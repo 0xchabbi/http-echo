@@ -152,7 +152,7 @@ steps:
 
 
 - script: |
-    env | sort
+    curl -v http://${GETEXTERNALIP_KUBECTLOUTPUT}
   displayName: 'Curl Test'
 
 # - task: PowerShell@2
