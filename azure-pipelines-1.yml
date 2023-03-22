@@ -28,7 +28,7 @@ steps:
   inputs:
     command: version
 
-- task: TerraformCLI@0
+- task: TerraformTaskV1@0
   displayName: 'terraform apply'
   inputs:
     command: apply
