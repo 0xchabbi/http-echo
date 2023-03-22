@@ -23,7 +23,7 @@ steps:
   displayName: 'check terraform version'
   inputs:
     command: version
-- task: TerraformInstaller@0
+- task: TerraformCLI@0
   displayName: install terraform
   inputs:
     terraformVersion: '1.4.2'
