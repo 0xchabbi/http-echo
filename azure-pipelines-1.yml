@@ -39,6 +39,7 @@ steps:
     providerAzureRmSubscriptionId: $(azureSubscriptionid)
     runAzLogin: true
     backendServiceArm: $(azureserviceconnection)
+    backendAzureRmResourceGroupName: 'stgchabbi'
     backendAzureRmStorageAccountName: 'storagechabbi'
     backendAzureRmContainerName: 'chabbiblob'
     backendAzureRmKey: $(System.DefaultWorkingDirectory)/terraform/terraform.tfstate
