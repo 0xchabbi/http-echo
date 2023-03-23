@@ -41,7 +41,7 @@ steps:
     backendServiceArm: $(azureserviceconnection)
     backendAzureRmStorageAccountName: 'storagechabbi'
     backendAzureRmContainerName: 'chabbiblob'
-    # backendAzureRmKey: 
+    backendAzureRmKey: $(System.DefaultWorkingDirectory)/terraform/terraform.tfstate
 
 
 
