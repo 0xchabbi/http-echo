@@ -38,7 +38,10 @@ steps:
     environmentServiceName: $(azureserviceconnection)
     providerAzureRmSubscriptionId: $(azureSubscriptionid)
     runAzLogin: true
-
+    backendServiceArm: $(azureserviceconnection)
+    backendAzureRmStorageAccountName: 'storagechabbi'
+    backendAzureRmContainerName: 'chabbiblob'
+    # backendAzureRmKey: 
 
 
 
@@ -129,7 +132,7 @@ steps:
   displayName: 'Script task'
 
 - task: KubernetesManifest@0
-  displayName: Delete to Kubernetes cluster
+  displayName: Delete Kubernetes cluster
   inputs:
     action: delete
     kubernetesServiceConnection: '$(kubernetesserviceconnection)'
