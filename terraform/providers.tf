@@ -13,9 +13,6 @@ provider "azurerm" {
   features {}
 }
 
- terraform {
-    backend "local" {}
-}
 
 
 provider "kubernetes" {
