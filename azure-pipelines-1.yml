@@ -34,9 +34,8 @@ steps:
     provider: 'azurerm'
     command: init
     backendType: azurerm
-    workingDirectory: $(System.DefaultWorkingDirectory)/terraform/*
-    environmentServiceName: $(azureserviceconnection)
-    providerAzureRmSubscriptionId: $(azureSubscriptionid)
+    workingDirectory: $(System.DefaultWorkingDirectory)/terraform/
+    # providerAzureRmSubscriptionId: $(azureSubscriptionid)
     runAzLogin: true
     backendServiceArm: $(azureserviceconnection)
     backendAzureRmResourceGroupName: 'stgchabbi'
