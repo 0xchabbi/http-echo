@@ -43,7 +43,21 @@ steps:
     backendAzureRmContainerName: 'chabbiblob'
     backendAzureRmKey: $(System.DefaultWorkingDirectory)/terraform/terraform.tfstate
 
+- task: TerraformTaskV1@0
+  displayName: Terraform Plan
+  inputs:
+    provider: 'azurerm'
+    command: 'plan'
+    workingDirectory: $(System.DefaultWorkingDirectory)
+    environmentServiceNameAzureRM: $(azureserviceconnection)
 
+- task: TerraformTaskV1@0
+  displayName: Terraform Apply
+  inputs:
+    provider: 'azurerm'
+    command: 'apply'
+    workingDirectory: $(System.DefaultWorkingDirectory)
+    environmentServiceNameAzureRM: $(azureserviceconnection)
 
 # - task: TerraformTaskV1@0
 #   displayName: 'Init Terraform'

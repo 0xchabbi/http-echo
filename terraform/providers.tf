@@ -13,6 +13,11 @@ provider "azurerm" {
   features {}
 }
 
+ terraform {
+    backend "local" {}
+}
+
+
 provider "kubernetes" {
   config_path = local_file.kubeconfig
   config_context = var.cluster_name
