@@ -27,6 +27,7 @@ steps:
   displayName: install terraform
   inputs:
     terraformVersion: '1.4.2'
+    backendServiceArm: $(azureserviceconnection)
 
 - task: TerraformTaskV4@0
   displayName: 'terraform init'
