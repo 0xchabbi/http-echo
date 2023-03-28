@@ -42,7 +42,7 @@ steps:
     backendAzureRmKey: 'terraform\terraform.tfstate'
     StorageContainerName: 'tfcontainer'
 
-- task: Terraform@2
+- task: TerraformTaskV4@4
   inputs:
     TemplatePath: 'terraform/**'
     Arguments: 'apply'
