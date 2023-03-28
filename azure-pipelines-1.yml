@@ -47,7 +47,7 @@ steps:
     provider: 'azurerm'
     command: 'apply'
     workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
-    commandOptions: 'tfplan -auto-approve'
+    commandOptions: '-auto-approve'
     environmentServiceNameAzureRM: 'serviceconnection1'
 
 - task: Terraform@2
