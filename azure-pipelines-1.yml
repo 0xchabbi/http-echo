@@ -24,7 +24,7 @@ steps:
   displayName: 'check terraform version'
   inputs:
     command: version
-- task: TerraformInstaller@0
+- task: ms-devlabs.custom-terraform-tasks.custom-terraform-installer-task.TerraformInstaller
   inputs:
     terraformVersion: 'latest'
 
