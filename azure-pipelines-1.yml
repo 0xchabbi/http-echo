@@ -30,7 +30,6 @@ steps:
     terraformVersion: 'latest'
 
 
-
 - task: TerraformTaskV4@4
   inputs:
     provider: 'azurerm'
