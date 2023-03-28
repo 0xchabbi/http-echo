@@ -46,6 +46,7 @@ steps:
   inputs:
     TemplatePath: 'terraform/**'
     Arguments: 'apply'
+    backendServiceArm: 'serviceconnection1'
     InstallTerraform: true
     UseAzureSub: true
     ConnectedServiceNameSelector: 'ConnectedServiceNameARM'
