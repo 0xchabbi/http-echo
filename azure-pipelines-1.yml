@@ -41,20 +41,20 @@ steps:
 #     backendAzureRmContainerName: 'tfcontainer'
 #     backendAzureRmKey: 'terraform\terraform.tfstate'
 #     StorageContainerName: 'tfcontainer'
-- task: Terraform@2
+
+- task: TerraformCLI@0
   inputs:
-    TemplatePath: '$(System.DefaultWorkingDirectory)/terraform'
-    Arguments: 'plan'
-    InstallTerraform: true
-    Version: '1.3.6'
-    UseAzureSub: true
-    ConnectedServiceNameSelector: 'ConnectedServiceNameARM'
-    ConnectedServiceNameARM: 'serviceconnection1'
-    ManageState: true
-    SpecifyStorageAccount: true
-    StorageAccountResourceGroup: 'stgchabbi'
-    StorageAccountRM: 'stgchabbi1'
-    StorageContainerName: 'tfcontainer'
+    command: 'init'
+    workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
+    commandOptions: '-input=true'
+    backendType: 'azurerm'
+    backendServiceArm: 'serviceconnection1'
+    backendAzureRmSubscriptionId: '8fdfcd42-cb6a-4f09-bd1d-984a332c84b1'
+    backendAzureRmResourceGroupName: 'stgchabbi'
+    backendAzureRmStorageAccountName: 'stgchabbi1'
+    backendAzureRmContainerName: 'tfcontainer'
+    backendAzureRmKey: 'terraform\terraform.tfstate'
+    allowTelemetryCollection: true
 
 # - task: TerraformTaskV4@4
 #   inputs:
