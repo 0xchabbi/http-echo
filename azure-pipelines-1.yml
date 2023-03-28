@@ -20,42 +20,33 @@ variables:
 
 steps:
 
-- task: TerraformCLI@0
-  displayName: 'check terraform version'
-  inputs:
-    command: version
+# - task: TerraformCLI@0
+#   displayName: 'check terraform version'
+#   inputs:
+#     command: version
 
-- task: ms-devlabs.custom-terraform-tasks.custom-terraform-installer-task.TerraformInstaller@0
-  displayName: ‘Install Terraform 1.3.6’
-  inputs:
-    terraformVersion: 1.3.6
+# - task: ms-devlabs.custom-terraform-tasks.custom-terraform-installer-task.TerraformInstaller@0
+#   displayName: ‘Install Terraform 1.3.6’
+#   inputs:
+#     terraformVersion: 1.3.6
 
-- task: TerraformTaskV4@4
-  inputs:
-    provider: 'azurerm'
-    command: 'init'
-    workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
-    backendServiceArm: 'serviceconnection1'
-    backendAzureRmResourceGroupName: 'stgchabbi'
-    backendAzureRmStorageAccountName: 'stgchabbi1'
-    backendAzureRmContainerName: 'tfcontainer'
-    backendAzureRmKey: 'terraform\terraform.tfstate'
-    StorageContainerName: 'tfcontainer'
-
-- task: TerraformTaskV4@4
-  inputs:
-    provider: 'azurerm'
-    command: 'apply'
-    workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
-    commandOptions: '-auto-approve'
-    environmentServiceNameAzureRM: 'serviceconnection1'
-
+# - task: TerraformTaskV4@4
+#   inputs:
+#     provider: 'azurerm'
+#     command: 'init'
+#     workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
+#     backendServiceArm: 'serviceconnection1'
+#     backendAzureRmResourceGroupName: 'stgchabbi'
+#     backendAzureRmStorageAccountName: 'stgchabbi1'
+#     backendAzureRmContainerName: 'tfcontainer'
+#     backendAzureRmKey: 'terraform\terraform.tfstate'
+#     StorageContainerName: 'tfcontainer'
 - task: Terraform@2
   inputs:
-    TemplatePath: 'terraform/**'
-    Arguments: 'apply'
-    backendServiceArm: 'serviceconnection1'
+    TemplatePath: '$(System.DefaultWorkingDirectory)/terraform'
+    Arguments: 'plan'
     InstallTerraform: true
+    Version: '1.3.6'
     UseAzureSub: true
     ConnectedServiceNameSelector: 'ConnectedServiceNameARM'
     ConnectedServiceNameARM: 'serviceconnection1'
@@ -63,6 +54,33 @@ steps:
     SpecifyStorageAccount: true
     StorageAccountResourceGroup: 'stgchabbi'
     StorageAccountRM: 'stgchabbi1'
+    StorageContainerName: 'tfcontainer'
+
+# - task: TerraformTaskV4@4
+#   inputs:
+#     provider: 'azurerm'
+#     command: 'apply'
+#     workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
+#     commandOptions: '-auto-approve'
+#     environmentServiceNameAzureRM: 'serviceconnection1'
+
+# - task: Terraform@2
+#   inputs:
+#     TemplatePath: 'terraform/**'
+#     Arguments: 'apply'
+#     backendServiceArm: 'serviceconnection1'
+#     InstallTerraform: true
+#     UseAzureSub: true
+#     ConnectedServiceNameSelector: 'ConnectedServiceNameARM'
+#     ConnectedServiceNameARM: 'serviceconnection1'
+#     ManageState: true
+#     SpecifyStorageAccount: true
+#     StorageAccountResourceGroup: 'stgchabbi'
+#     StorageAccountRM: 'stgchabbi1'
+
+
+
+
 
 # - task: TerraformCLI@0
 #   displayName: install terraform
