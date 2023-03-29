@@ -20,41 +20,57 @@ variables:
 
 steps:
 
+- task: TerraformCLI@0
+  displayName: 'check terraform version'
+  inputs:
+    command: version
+
+- task: ms-devlabs.custom-terraform-tasks.custom-terraform-installer-task.TerraformInstaller@0
+  displayName: ‘Install Terraform 1.3.6’
+  inputs:
+    terraformVersion: 1.3.6
+
+- task: TerraformTaskV4@4
+  inputs:
+     provider: 'azurerm'
+     command: 'init'
+     workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
+     backendServiceArm: 'serviceconnection1'
+     backendAzureRmResourceGroupName: 'stgchabbi'
+     backendAzureRmStorageAccountName: 'stgchabbi1'
+     backendAzureRmContainerName: 'tfcontainer'
+     backendAzureRmKey: 'terraform\terraform.tfstate'
+     StorageContainerName: 'tfcontainer'
+
+- task: TerraformTaskV4@4
+  inputs:
+    provider: 'azurerm'
+    command: 'plan'
+    workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
+    commandOptions: '-out=tfplan'
+    environmentServiceNameAzureRM: 'serviceconnection1'
+
+- task: TerraformTaskV4@4
+  inputs:
+    provider: 'azurerm'
+    command: 'apply'
+    workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
+    commandOptions: '-auto-approve'
+    environmentServiceNameAzureRM: 'serviceconnection1'
+
 # - task: TerraformCLI@0
-#   displayName: 'check terraform version'
 #   inputs:
-#     command: version
-
-# - task: ms-devlabs.custom-terraform-tasks.custom-terraform-installer-task.TerraformInstaller@0
-#   displayName: ‘Install Terraform 1.3.6’
-#   inputs:
-#     terraformVersion: 1.3.6
-
-# - task: TerraformTaskV4@4
-#   inputs:
-#     provider: 'azurerm'
 #     command: 'init'
 #     workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
+#     commandOptions: '-input=true'
+#     backendType: 'azurerm'
 #     backendServiceArm: 'serviceconnection1'
+#     backendAzureRmSubscriptionId: '8fdfcd42-cb6a-4f09-bd1d-984a332c84b1'
 #     backendAzureRmResourceGroupName: 'stgchabbi'
 #     backendAzureRmStorageAccountName: 'stgchabbi1'
 #     backendAzureRmContainerName: 'tfcontainer'
 #     backendAzureRmKey: 'terraform\terraform.tfstate'
-#     StorageContainerName: 'tfcontainer'
-
-- task: TerraformCLI@0
-  inputs:
-    command: 'init'
-    workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
-    commandOptions: '-input=true'
-    backendType: 'azurerm'
-    backendServiceArm: 'serviceconnection1'
-    backendAzureRmSubscriptionId: '8fdfcd42-cb6a-4f09-bd1d-984a332c84b1'
-    backendAzureRmResourceGroupName: 'stgchabbi'
-    backendAzureRmStorageAccountName: 'stgchabbi1'
-    backendAzureRmContainerName: 'tfcontainer'
-    backendAzureRmKey: 'terraform\terraform.tfstate'
-    allowTelemetryCollection: true
+#     allowTelemetryCollection: true
 
 # - task: TerraformTaskV4@4
 #   inputs:
