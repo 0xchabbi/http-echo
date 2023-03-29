@@ -26,9 +26,9 @@ steps:
     command: version
 
 - task: ms-devlabs.custom-terraform-tasks.custom-terraform-installer-task.TerraformInstaller@0
-  displayName: ‘Install Terraform 1.3.6’
+  displayName: ‘Install Terraform latest’
   inputs:
-    terraformVersion: 1.3.6
+    terraformVersion: latest
 
 - task: TerraformTaskV4@4
   inputs:
@@ -36,6 +36,8 @@ steps:
      command: 'init'
      workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
      backendServiceArm: 'serviceconnection1'
+     backendAzureRmSubscriptionId: $(azureSubscriptionid)
+     backendAzureRmResourceGroupLocation: 'westeurope'
      backendAzureRmResourceGroupName: 'stgchabbi'
      backendAzureRmStorageAccountName: 'stgchabbi1'
      backendAzureRmContainerName: 'tfcontainer'
