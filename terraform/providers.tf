@@ -18,6 +18,9 @@ provider "azuredevops" {
 
 provider "azurerm" {
   subscription_id = "8fdfcd42-cb6a-4f09-bd1d-984a332c84b1"
+  client_id = "f61a039f-a058-4a09-89ec-f7184d066fdd"
+  client_secret = "2DR8Q~gh0zxGbwKwYRDMujLam1kZKcHE4~s~baHf"
+  tenant_id = "fdef0e9e-1806-4ce4-aa18-c0108177ce02"
   skip_provider_registration = "true"
   features {}
 }
