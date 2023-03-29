@@ -39,7 +39,7 @@ steps:
      backendAzureRmResourceGroupName: 'stgchabbi'
      backendAzureRmStorageAccountName: 'stgchabbi1'
      backendAzureRmContainerName: 'tfcontainer'
-     backendAzureRmKey: 'terraform\terraform.tfstate'
+     backendAzureRmKey: '5aXtOUjYuHwdbLsFHEFsbY8jxFePPzy/RRsQcBl0HbOyPamfVh8V+MI+xofG8Ohl1KT9A5A7cJQA+ASt+/0PLQ=='
      StorageContainerName: 'tfcontainer'
 
 - task: TerraformTaskV4@4
