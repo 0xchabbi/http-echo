@@ -32,8 +32,8 @@ steps:
     targetType: 'inline'
     script: |
       echo "Setting environment variables..."
-      echo "export ARM_CLIENT_ID=$(ClientidOutput)" >> $(System.DefaultWorkingDirectory)/env-vars 
-      echo "export ARM_CLIENT_SECRET=$(ClientsecretOutput)" >> $(System.DefaultWorkingDirectory)/env-vars
+      echo "export ARM_CLIENT_ID=$(Clientid)" >> $(Pipeline.Workspace)/env-vars 
+      echo "export ARM_CLIENT_SECRET=$(Clientsecret)" >> $(Pipeline.Workspace)/env-vars
   displayName: 'Set environment variables'
 
 - task: TerraformCLI@0
