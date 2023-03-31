@@ -50,7 +50,7 @@ steps:
   inputs:
      provider: 'azurerm'
      command: 'init'
-     workingDirectory: '$(Pipeline.Workspace)/terraform'
+     workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
      backendServiceArm: 'serviceconnection1'
      backendAzureRmSubscriptionId: $(azureSubscriptionid)
      backendAzureRmResourceGroupLocation: 'westeurope'
@@ -64,7 +64,7 @@ steps:
   inputs:
     provider: 'azurerm'
     command: 'plan'
-    workingDirectory: '$(Pipeline.Workspace)/terraform'
+    workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
     commandOptions: '-out=tfplan'
     environmentServiceNameAzureRM: 'serviceconnection1'
 
@@ -72,7 +72,7 @@ steps:
   inputs:
     provider: 'azurerm'
     command: 'apply'
-    workingDirectory: '$(Pipeline.Workspace)/terraform'
+    workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
     commandOptions: '-auto-approve'
     environmentServiceNameAzureRM: 'serviceconnection1'
 
