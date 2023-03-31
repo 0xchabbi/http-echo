@@ -17,10 +17,10 @@ provider "azuredevops" {
   }
 
 provider "azurerm" {
-  subscription_id = "8fdfcd42-cb6a-4f09-bd1d-984a332c84b1"
-  client_id = "6107b06b-75cb-4a7f-ad6e-f3cb82383550"
-  client_secret = "ZxD8Q~Xwve.4QR6jtRFezvPPA9NaqOerpRzEmaTf"
-  tenant_id = "fdef0e9e-1806-4ce4-aa18-c0108177ce02"
+  subscription_id = var.subscription_id
+  client_id = "${env.ARM_CLIENT_ID}" ##"6107b06b-75cb-4a7f-ad6e-f3cb82383550"
+  client_secret = "${env.ARM_CLIENT_SECRET}" ##"ZxD8Q~Xwve.4QR6jtRFezvPPA9NaqOerpRzEmaTf"
+  tenant_id = var.tenant_id
   skip_provider_registration = "true"
   features {}
 }

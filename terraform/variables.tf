@@ -26,3 +26,19 @@ variable "load_test_name" {
   type        = string
   description = "Load Test Name"
 }
+variable "client_id" {
+  type = string
+  description = "clientid"
+}
+variable "client_secret" {
+  type = string
+  description = "clientsecret"
+}
+variable "subscription_id" {
+  type = string
+  description = "subscriptionid"
+}
+variable "tenant_id" {
+  type = string
+  description = "tenantid"
+}

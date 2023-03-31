@@ -20,6 +20,22 @@ variables:
 
 steps:
 
+- task: AzureKeyVault@2
+  inputs:
+    azureSubscription: 'serviceconnection1'
+    KeyVaultName: 'keyvault-chabbi'
+    SecretsFilter: 'Clientid,Clientsecret'
+    RunAsPreJob: true
+
+- task: Bash@3
+  inputs:
+    targetType: 'inline'
+    script: |
+      echo "Setting environment variables..."
+      echo "export ARM_CLIENT_ID=$(ClientidOutput)" >> $(Pipeline.Workspace)/env-vars
+      echo "export ARM_CLIENT_SECRET=$(ClientsecretOutput)" >> $(Pipeline.Workspace)/env-vars
+  displayName: 'Set environment variables'
+
 - task: TerraformCLI@0
   displayName: 'check terraform version'
   inputs:
@@ -34,7 +50,7 @@ steps:
   inputs:
      provider: 'azurerm'
      command: 'init'
-     workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
+     workingDirectory: '$(Pipeline.Workspace)/terraform'
      backendServiceArm: 'serviceconnection1'
      backendAzureRmSubscriptionId: $(azureSubscriptionid)
      backendAzureRmResourceGroupLocation: 'westeurope'
@@ -48,7 +64,7 @@ steps:
   inputs:
     provider: 'azurerm'
     command: 'plan'
-    workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
+    workingDirectory: '$(Pipeline.Workspace)/terraform'
     commandOptions: '-out=tfplan'
     environmentServiceNameAzureRM: 'serviceconnection1'
 
@@ -56,113 +72,10 @@ steps:
   inputs:
     provider: 'azurerm'
     command: 'apply'
-    workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
+    workingDirectory: '$(Pipeline.Workspace)/terraform'
     commandOptions: '-auto-approve'
     environmentServiceNameAzureRM: 'serviceconnection1'
 
-# - task: TerraformCLI@0
-#   inputs:
-#     command: 'init'
-#     workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
-#     commandOptions: '-input=true'
-#     backendType: 'azurerm'
-#     backendServiceArm: 'serviceconnection1'
-#     backendAzureRmSubscriptionId: '8fdfcd42-cb6a-4f09-bd1d-984a332c84b1'
-#     backendAzureRmResourceGroupName: 'stgchabbi'
-#     backendAzureRmStorageAccountName: 'stgchabbi1'
-#     backendAzureRmContainerName: 'tfcontainer'
-#     backendAzureRmKey: 'terraform\terraform.tfstate'
-#     allowTelemetryCollection: true
-
-# - task: TerraformTaskV4@4
-#   inputs:
-#     provider: 'azurerm'
-#     command: 'apply'
-#     workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
-#     commandOptions: '-auto-approve'
-#     environmentServiceNameAzureRM: 'serviceconnection1'
-
-# - task: Terraform@2
-#   inputs:
-#     TemplatePath: 'terraform/**'
-#     Arguments: 'apply'
-#     backendServiceArm: 'serviceconnection1'
-#     InstallTerraform: true
-#     UseAzureSub: true
-#     ConnectedServiceNameSelector: 'ConnectedServiceNameARM'
-#     ConnectedServiceNameARM: 'serviceconnection1'
-#     ManageState: true
-#     SpecifyStorageAccount: true
-#     StorageAccountResourceGroup: 'stgchabbi'
-#     StorageAccountRM: 'stgchabbi1'
-
-
-
-
-
-# - task: TerraformCLI@0
-#   displayName: install terraform
-#   inputs:
-#     terraformVersion: '1.4.2'
-
-# - task: TerraformTaskV4@0
-#   displayName: 'terraform init'
-#   inputs:
-#     provider: 'azurerm'
-#     command: init
-#     backendType: azurerm
-#     workingDirectory: $(System.DefaultWorkingDirectory)/terraform/
-#     # providerAzureRmSubscriptionId: $(azureSubscriptionid)
-#     runAzLogin: true
-#     backendServiceArm: $(azureserviceconnection)
-#     backendAzureRmResourceGroupName: 'stgchabbi'
-#     backendAzureRmStorageAccountName: 'storagechabbi'
-#     backendAzureRmContainerName: 'chabbiblob'
-#     backendAzureRmKey: $(System.DefaultWorkingDirectory)/terraform/terraform.tfstate
-
-# - task: TerraformTaskV4@0
-#   displayName: Terraform Plan
-#   inputs:
-#     # provider: 'azurerm'
-#     command: 'plan'
-#     workingDirectory: $(System.DefaultWorkingDirectory)/terraform/
-#     environmentServiceNameAzureRM: $(azureserviceconnection)
-
-# - task: TerraformTaskV4@0
-#   displayName: Terraform Apply
-#   inputs:
-#     provider: 'azurerm'
-#     command: 'apply'
-#     workingDirectory: $(System.DefaultWorkingDirectory)/terraform/
-#     environmentServiceNameAzureRM: $(azureserviceconnection)
-
-# - task: TerraformTaskV1@0
-#   displayName: 'Init Terraform'
-#   inputs:
-#     provider: 'azurerm'
-#     command: 'init'
-#     commandOptions: '-input=false -backend=false'
-#     workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
-#     backendserviceArm: '$(System.DefaultWorkingDirectory)\Users\nis-bilal\http_echo\http-echo\terraform\providers.tf'
-#     backendAzureRmResourceGroupName: 'N/A'
-#     backendAzureRmStorageAccountName: 'N/A'
-#     backendAzureRmContainerName: 'N/A'
-#     backendAzureRmKey: 'N/A'
-# - task: TerraformTaskV1@0
-#   displayName: 'Validate Terraform'
-#   inputs:
-#     provider: 'azurerm'
-#     command: 'validate'
-#     workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
-#     # backendserviceArm: '$(System.DefaultWorkingDirectory)/terraform'
-# - task: TerraformTaskV1@0
-#   displayName: 'Apply Terraform'
-#   inputs:
-#     provider: 'azurerm'
-#     command: 'apply'
-#     workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
-#     # backendserviceArm: '$(System.DefaultWorkingDirectory)/terraform'
-#     azureserviceconnection: '$(azureserviceconnection)'
 
 - task: GoTool@0
   inputs:
