@@ -51,6 +51,7 @@ steps:
      provider: 'azurerm'
      command: 'init'
      workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
+     commandOptions: '-var "client_id=$(ARM_CLIENT_ID)" -var "client_secret=$(ARM_CLIENT_SECRET)"'
      backendServiceArm: 'serviceconnection1'
      backendAzureRmSubscriptionId: $(azureSubscriptionid)
      backendAzureRmResourceGroupLocation: 'westeurope'
@@ -66,7 +67,7 @@ steps:
     provider: 'azurerm'
     command: 'plan'
     workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
-    commandOptions: '-out=tfplan'
+    commandOptions: '-out=tfplan -var "client_id=$(ARM_CLIENT_ID)" -var "client_secret=$(ARM_CLIENT_SECRET)"'
     environmentServiceNameAzureRM: 'serviceconnection1'
   displayName: 'Terraform Plan'
 
@@ -75,7 +76,7 @@ steps:
     provider: 'azurerm'
     command: 'apply'
     workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
-    commandOptions: '-auto-approve'
+    commandOptions: '-auto-approve -var "client_id=$(ARM_CLIENT_ID)" -var "client_secret=$(ARM_CLIENT_SECRET)"'
     environmentServiceNameAzureRM: 'serviceconnection1'
   displayName: 'Terraform Apply'
 
