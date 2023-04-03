@@ -19,7 +19,7 @@ variables:
 
 
 steps:
-- task:
+- task: Bash@3
   inputs:
     targetType: 'inline'
     script: 'az login'
