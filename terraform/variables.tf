@@ -50,3 +50,7 @@ variable "ARM_CLIENT_ID" {
   type = string
   default = ""
 }
+variable "ARM_ADO_TOKEN" {
+  type = string
+  default = ""
+}

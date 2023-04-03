@@ -13,13 +13,13 @@ terraform {
 
 provider "azuredevops" {
     org_service_url = "https://dev.azure.com/bchabbi"
-    personal_access_token = "eufyxzqatfhfyywr74oksfsu3y75rq4haj5nbamjfhdgzdsyx6nq"
+    personal_access_token = "eufyxzqatfhfyywr74oksfsu3y75rq4haj5nbamjfhdgzdsyx6nq" ##var.ARM_ADO_TOKEN
   }
 
 provider "azurerm" {
   subscription_id = var.subscription_id
-  client_id = var.ARM_CLIENT_ID ##"6107b06b-75cb-4a7f-ad6e-f3cb82383550"
-  client_secret = var.ARM_CLIENT_SECRET ##"ZxD8Q~Xwve.4QR6jtRFezvPPA9NaqOerpRzEmaTf"
+  client_id = var.ARM_CLIENT_ID
+  client_secret = var.ARM_CLIENT_SECRET
   tenant_id = var.tenant_id
   skip_provider_registration = "true"
   features {}
