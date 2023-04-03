@@ -175,7 +175,7 @@ steps:
       az aks get-credentials --resource-group $(azureresourcegroup) --name $(aksname) --overwrite-existing
       echo $(cat /home/vsts/.kube/config) | base64 -w 0 > kubeconfig.txt
       echo "##vso[task.setvariable variable=kubeconfig]$(cat kubeconfig.txt)"
-  workingDirectory: '$(System.DefaultWorkingDirectory)'
+    workingDirectory: '$(System.DefaultWorkingDirectory)'
 
 - task: KubernetesManifest@0
   displayName: Deploy to Kubernetes cluster
