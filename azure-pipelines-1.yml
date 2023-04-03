@@ -109,12 +109,10 @@ steps:
       $(System.DefaultWorkingDirectory)/manifest/service.yml
     TargetFolder: '$(Pipeline.Workspace)/s/manifest'
 
-- task: AzureCLI@2
+- task: Bash@3
   inputs:
-    azureSubscription: '$(azureSubscriptionid)'
-    scriptType: 'bash'
-    scriptLocation: 'inlineScript'
-    inlineScript: |
+    targetType: 'inline'
+    script: |
       az acr create --name akschabbi97 --sku Standard --admin-enabled true
       az acr update -n akschabbi97 --admin-enabled true
       az acr update -n akschabbi97 --password $(cat docker-creds.json | jq -r '.passwords[0].value')
