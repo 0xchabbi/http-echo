@@ -151,7 +151,7 @@ steps:
     action: createSecret
     secretName: $(imagePullSecret)
     dockerRegistryEndpoint: $(dockerregistry)
-    kubernetesServiceConnection: $(azureserviceconnection)
+    kubernetesServiceConnection: $(kubernetesserviceconnection)
     namespace: 'default'
 
 - script: |
