@@ -29,16 +29,17 @@ steps:
   inputs:
     azureSubscription: 'serviceconnection1'
     KeyVaultName: 'keyvault-chabbi'
-    SecretsFilter: 'Clientid,Clientsecret'
+    SecretsFilter: 'Clientid,Clientsecret,Adotoken'
     RunAsPreJob: true
 
 - task: Bash@3
   inputs:
     targetType: 'inline'
-    script: |
+    script: | ##export the var as pipeline var not env. var
       echo "Setting pipeline variables..."
       echo "##vso[task.setvariable variable=ARM_CLIENT_ID;isOutput=true]$(Clientid)"
       echo "##vso[task.setvariable variable=ARM_CLIENT_SECRET;isOutput=true]$(Clientsecret)"
+      echo "##vso[task.setvariable variable=ARM_ADO_TOKEN;isOutput=true]$(Adotoken)"
   displayName: 'Set pipeline variables'
 
 
@@ -108,6 +109,18 @@ steps:
       $(System.DefaultWorkingDirectory)/manifest/service.yml
     TargetFolder: '$(Pipeline.Workspace)/s/manifest'
 
+- task: AzureCLI@2
+  inputs:
+    azureSubscription: '$(azureSubscriptionid)'
+    scriptType: 'bash'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+      az acr create --name akschabbi97 --sku Standard --admin-enabled true
+      az acr update -n akschabbi97 --admin-enabled true
+      az acr update -n akschabbi97 --password $(cat docker-creds.json | jq -r '.passwords[0].value')
+      az acr credential show -n myacr --query "passwords[0].value" -o tsv > docker-creds.txt
+  displayName: 'Create Docker registry and credentials'
+
 - task: Docker@2
   displayName: Build Docker image
   inputs:
@@ -138,7 +151,7 @@ steps:
     action: createSecret
     secretName: $(imagePullSecret)
     dockerRegistryEndpoint: $(dockerregistry)
-    kubernetesServiceConnection: $(kubernetesserviceconnection)
+    kubernetesServiceConnection: $(azureserviceconnection)
     namespace: 'default'
 
 - script: |
@@ -154,6 +167,16 @@ steps:
     rolloutStatusTimeout: 5
     arguments: deployment web
 
+- task: Bash@3
+  displayName: 'Get Kubeconfig file'
+  inputs:
+    targetType: 'inline'
+    script: |
+      az aks get-credentials --resource-group $(azureresourcegroup) --name $(aksname) --overwrite-existing
+      echo $(cat /home/vsts/.kube/config) | base64 -w 0 > kubeconfig.txt
+      echo "##vso[task.setvariable variable=kubeconfig]$(cat kubeconfig.txt)"
+  workingDirectory: '$(System.DefaultWorkingDirectory)'
+
 - task: KubernetesManifest@0
   displayName: Deploy to Kubernetes cluster
   inputs:
@@ -161,6 +184,7 @@ steps:
     kubernetesServiceConnection: '$(kubernetesserviceconnection)'
     namespace: 'default'
     rolloutStatusTimeout: 5
+    useConfigurationFile: true
     manifests: |
       $(Pipeline.Workspace)/s/manifest/deployment.yml
       $(Pipeline.Workspace)/s/manifest/service.yml
