@@ -18,8 +18,8 @@ provider "azuredevops" {
 
 provider "azurerm" {
   subscription_id = var.subscription_id
-  client_id = "${env.ARM_CLIENT_ID}" ##"6107b06b-75cb-4a7f-ad6e-f3cb82383550"
-  client_secret = "${env.ARM_CLIENT_SECRET}" ##"ZxD8Q~Xwve.4QR6jtRFezvPPA9NaqOerpRzEmaTf"
+  client_id = var.ARM_CLIENT_ID ##"6107b06b-75cb-4a7f-ad6e-f3cb82383550"
+  client_secret = var.ARM_CLIENT_SECRET ##"ZxD8Q~Xwve.4QR6jtRFezvPPA9NaqOerpRzEmaTf"
   tenant_id = var.tenant_id
   skip_provider_registration = "true"
   features {}

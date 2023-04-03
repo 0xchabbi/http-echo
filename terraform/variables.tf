@@ -42,3 +42,11 @@ variable "tenant_id" {
   type = string
   description = "tenantid"
 }
+variable "ARM_CLIENT_SECRET" {
+  type = string
+  default = ""
+}
+variable "ARM_CLIENT_ID" {
+  type = string
+  default = ""
+}
