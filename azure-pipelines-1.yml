@@ -31,10 +31,11 @@ steps:
   inputs:
     targetType: 'inline'
     script: |
-      echo "Setting environment variables..."
-      echo "export ARM_CLIENT_ID=$(Clientid)" >> $(Pipeline.Workspace)/env-vars 
-      echo "export ARM_CLIENT_SECRET=$(Clientsecret)" >> $(Pipeline.Workspace)/env-vars
-  displayName: 'Set environment variables'
+      echo "Setting pipeline variables..."
+      echo "##vso[task.setvariable variable=ARM_CLIENT_ID;isOutput=true]$(Clientid)"
+      echo "##vso[task.setvariable variable=ARM_CLIENT_SECRET;isOutput=true]$(Clientsecret)"
+  displayName: 'Set pipeline variables'
+
 
 - task: TerraformCLI@0
   displayName: 'check terraform version'
@@ -51,7 +52,7 @@ steps:
      provider: 'azurerm'
      command: 'init'
      workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
-     commandOptions: '-var "client_id=$(ARM_CLIENT_ID)" -var "client_secret=$(ARM_CLIENT_SECRET)"'
+     commandOptions: '-backend-config="client_id=$(ARM_CLIENT_ID)" -backend-config="client_secret=$(ARM_CLIENT_SECRET)"'
      backendServiceArm: 'serviceconnection1'
      backendAzureRmSubscriptionId: $(azureSubscriptionid)
      backendAzureRmResourceGroupLocation: 'westeurope'
