@@ -58,11 +58,11 @@ steps:
     targetType: 'inline'
     script: |
       echo "Setting pipeline variables..."
-      echo "##vso[task.setvariable variable=ACR_NAME;isOutput=true]$(acrname)"
-      echo "##vso[task.setvariable variable=ACR_REGISTRY>$(az acr show --name'$(acrname)' --query loginServer --output tsv)>"
-      echo "##vso[task.setvariable variable=ACR_USERNAME>$(az acr credential show --name'$(acrname)' --query username --output tsv)>"
-      echo "##vso[task.setvariable variable=ACR_PASSWORD>$(az acr credential show --name'$(acrname)' --query passwords[0].value --output tsv)>"
-      echo "##vso[task.setvariable variable=AKS_CONNECTION>$(az aks show --resource-group '$(aksazureresourcegroup)' --name'$(aksname)' --query id --output tsv)>"
+      echo "##vso[task.setvariable variable=ACR_NAME;isOutput=true]$(myacrchabbi)"
+      echo "##vso[task.setvariable variable=ACR_REGISTRY>$(az acr show --name'myacrchabbi' --query loginServer --output tsv)>"
+      echo "##vso[task.setvariable variable=ACR_USERNAME>$(az acr credential show --name'myacrchabbi' --query username --output tsv)>"
+      echo "##vso[task.setvariable variable=ACR_PASSWORD>$(az acr credential show --name'myacrchabbi' --query passwords[0].value --output tsv)>"
+      echo "##vso[task.setvariable variable=AKS_CONNECTION>$(az aks show --resource-group'akschabbi' --name'clusterchabbi' --query id --output tsv)>"
   displayName: 'Set pipeline variables for acr and aks'
 
 
