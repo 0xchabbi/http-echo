@@ -41,7 +41,7 @@ steps:
       echo "##vso[task.setvariable variable=ARM_CLIENT_ID;isOutput=true]$(Clientid)"
       echo "##vso[task.setvariable variable=ARM_CLIENT_SECRET;isOutput=true]$(Clientsecret)"
       echo "##vso[task.setvariable variable=ARM_ADO_TOKEN;isOutput=true]$(Adotoken)"
-  displayName: 'Set pipeline variables'
+  displayName: 'Set pipeline variables for keyvault'
 
 - task: Bash@3
   inputs:
@@ -51,6 +51,8 @@ steps:
       az account set --subscription '$(azureSubscriptionid)'
       az acr login --name '$(acrname)'
       az aks get-credentials --resource-group '$(aksazureresourcegroup)' --name '$(aksname)'
+      az acr update -n $(acrname) --admin-enabled true
+  displayName: 'Get aks and acr credentials'
 - task: Bash@3
   inputs:
     targetType: 'inline'
@@ -61,7 +63,7 @@ steps:
       echo "##vso[task.setvariable variable=ACR_USERNAME>$(az acr credential show --name$(acrname) --query username --output tsv)>"
       echo "##vso[task.setvariable variable=ACR_PASSWORD>$(az acr credential show --name $(acrname) --query passwords[0].value --output tsv)>"
       echo "##vso[task.setvariable variable=AKS_CONNECTION>$(az aks show --resource-group $(aksazureresourcegroup) --name $(aksname) --query id --output tsv)>"
-  displayName: 'Set pipeline variables'
+  displayName: 'Set pipeline variables for acr and aks'
 
 
 # - task: TerraformCLI@0
@@ -169,14 +171,14 @@ steps:
    envsubst < $(Pipeline.Workspace)/s/manifest/deployment.yml.template >  $(Pipeline.Workspace)/s/manifest/deployment.yml
   displayName: 'Script task'
 
-- task: KubernetesManifest@0
-  displayName: Delete Kubernetes cluster
-  inputs:
-    action: delete
-    kubernetesServiceConnection: '$(kubernetesserviceconnection)'
-    namespace: 'default'
-    rolloutStatusTimeout: 5
-    arguments: deployment web
+# - task: KubernetesManifest@0
+#   displayName: Delete Kubernetes cluster
+#   inputs:
+#     action: delete
+#     kubernetesServiceConnection: '$(kubernetesserviceconnection)'
+#     namespace: 'default'
+#     rolloutStatusTimeout: 5
+#     arguments: deployment web
 
 
 # - task: Bash@3
