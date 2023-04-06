@@ -13,8 +13,9 @@ variables:
   dockerregistry: 'akschabbi97'
   kubernetesserviceconnection: 'kubechabbi'
   azureserviceconnection: 'serviceconnection1'
-  azureresourcegroup: 'akschabbi'
+  aksazureresourcegroup: 'akschabbi'
   azureSubscriptionid: '8fdfcd42-cb6a-4f09-bd1d-984a332c84b1'
+  tenantid: 'fdef0e9e-1806-4ce4-aa18-c0108177ce02'
 
 
 
@@ -42,50 +43,72 @@ steps:
       echo "##vso[task.setvariable variable=ARM_ADO_TOKEN;isOutput=true]$(Adotoken)"
   displayName: 'Set pipeline variables'
 
-
-- task: TerraformCLI@0
-  displayName: 'check terraform version'
+- task: AzureCLI@2
   inputs:
-    command: version
-
-- task: ms-devlabs.custom-terraform-tasks.custom-terraform-installer-task.TerraformInstaller@0
-  displayName: ‘Install Terraform latest’
+    azureSubscription: $(azureSubscriptionid)
+    scriptType: 'bash'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+      az login --service-principal -u $(Clientid) -p $(Clientsecret) --tenant $(tenantid)
+      az account set --subscription '$(azureSubscriptionid)'
+      az acr login --name '$(acrname)'
+      az aks get-credentials --resource-group '$(aksazureresourcegroup)' --name '$(aksname)'
+- task: Bash@3
   inputs:
-    terraformVersion: latest
+    targetType: 'inline'
+    script: |
+      echo "Setting pipeline variables..."
+      echo "##vso[task.setvariable variable=ACR_NAME;isOutput=true]$(acrname)"
+      echo "##vso[task.setvariable variable=ACR_REGISTRY>$(az acr show --name $(acrname) --query loginServer --output tsv)>"
+      echo "##vso[task.setvariable variable=ACR_USERNAME>$(az acr credential show --name$(acrname) --query username --output tsv)>"
+      echo "##vso[task.setvariable variable=ACR_PASSWORD>$(az acr credential show --name $(acrname) --query passwords[0].value --output tsv)>"
+      echo "##vso[task.setvariable variable=AKS_CONNECTION>$(az aks show --resource-group $(aksazureresourcegroup) --name $(aksname) --query id --output tsv)>"
+  displayName: 'Set pipeline variables'
 
-- task: TerraformTaskV4@4
-  inputs:
-     provider: 'azurerm'
-     command: 'init'
-     workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
-     commandOptions: '-backend-config="client_id=$(ARM_CLIENT_ID)" -backend-config="client_secret=$(ARM_CLIENT_SECRET)"'
-     backendServiceArm: 'serviceconnection1'
-     backendAzureRmSubscriptionId: $(azureSubscriptionid)
-     backendAzureRmResourceGroupLocation: 'westeurope'
-     backendAzureRmResourceGroupName: 'stgchabbi'
-     backendAzureRmStorageAccountName: 'stgchabbi1'
-     backendAzureRmContainerName: 'tfcontainer'
-     backendAzureRmKey: 'tf/terraform.tfstate'
-     StorageContainerName: 'tfcontainer'
-  displayName: 'Terraform Init'
 
-- task: TerraformTaskV4@4
-  inputs:
-    provider: 'azurerm'
-    command: 'plan'
-    workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
-    commandOptions: '-out=tfplan -var "client_id=$(ARM_CLIENT_ID)" -var "client_secret=$(ARM_CLIENT_SECRET)"'
-    environmentServiceNameAzureRM: 'serviceconnection1'
-  displayName: 'Terraform Plan'
+# - task: TerraformCLI@0
+#   displayName: 'check terraform version'
+#   inputs:
+#     command: version
 
-- task: TerraformTaskV4@4
-  inputs:
-    provider: 'azurerm'
-    command: 'apply'
-    workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
-    commandOptions: '-auto-approve -var "client_id=$(ARM_CLIENT_ID)" -var "client_secret=$(ARM_CLIENT_SECRET)"'
-    environmentServiceNameAzureRM: 'serviceconnection1'
-  displayName: 'Terraform Apply'
+# - task: ms-devlabs.custom-terraform-tasks.custom-terraform-installer-task.TerraformInstaller@0
+#   displayName: ‘Install Terraform latest’
+#   inputs:
+#     terraformVersion: latest
+
+# - task: TerraformTaskV4@4
+#   inputs:
+#      provider: 'azurerm'
+#      command: 'init'
+#      workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
+#      commandOptions: '-backend-config="client_id=$(ARM_CLIENT_ID)" -backend-config="client_secret=$(ARM_CLIENT_SECRET)"'
+#      backendServiceArm: 'serviceconnection1'
+#      backendAzureRmSubscriptionId: $(azureSubscriptionid)
+#      backendAzureRmResourceGroupLocation: 'westeurope'
+#      backendAzureRmResourceGroupName: 'stgchabbi'
+#      backendAzureRmStorageAccountName: 'stgchabbi1'
+#      backendAzureRmContainerName: 'tfcontainer'
+#      backendAzureRmKey: 'tf/terraform.tfstate'
+#      StorageContainerName: 'tfcontainer'
+#   displayName: 'Terraform Init'
+
+# - task: TerraformTaskV4@4
+#   inputs:
+#     provider: 'azurerm'
+#     command: 'plan'
+#     workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
+#     commandOptions: '-out=tfplan -var "client_id=$(ARM_CLIENT_ID)" -var "client_secret=$(ARM_CLIENT_SECRET)"'
+#     environmentServiceNameAzureRM: 'serviceconnection1'
+#   displayName: 'Terraform Plan'
+
+# - task: TerraformTaskV4@4
+#   inputs:
+#     provider: 'azurerm'
+#     command: 'apply'
+#     workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
+#     commandOptions: '-auto-approve -var "client_id=$(ARM_CLIENT_ID)" -var "client_secret=$(ARM_CLIENT_SECRET)"'
+#     environmentServiceNameAzureRM: 'serviceconnection1'
+#   displayName: 'Terraform Apply'
 
 
 - task: GoTool@0
@@ -109,15 +132,7 @@ steps:
       $(System.DefaultWorkingDirectory)/manifest/service.yml
     TargetFolder: '$(Pipeline.Workspace)/s/manifest'
 
-- task: Bash@3
-  inputs:
-    targetType: 'inline'
-    script: |
-      az acr create --name akschabbi97 --sku Standard --admin-enabled true
-      az acr update -n akschabbi97 --admin-enabled true
-      az acr update -n akschabbi97 --password $(cat docker-creds.json | jq -r '.passwords[0].value')
-      az acr credential show -n myacr --query "passwords[0].value" -o tsv > docker-creds.txt
-  displayName: 'Create Docker registry and credentials'
+
 
 - task: Docker@2
   displayName: Build Docker image
@@ -165,15 +180,16 @@ steps:
     rolloutStatusTimeout: 5
     arguments: deployment web
 
-- task: Bash@3
-  displayName: 'Get Kubeconfig file'
-  inputs:
-    targetType: 'inline'
-    script: |
-      az aks get-credentials --resource-group $(azureresourcegroup) --name $(aksname) --overwrite-existing
-      echo $(cat /home/vsts/.kube/config) | base64 -w 0 > kubeconfig.txt
-      echo "##vso[task.setvariable variable=kubeconfig]$(cat kubeconfig.txt)"
-    workingDirectory: '$(System.DefaultWorkingDirectory)'
+
+# - task: Bash@3
+#   displayName: 'Get Kubeconfig file'
+#   inputs:
+#     targetType: 'inline'
+#     script: |
+#       az aks get-credentials --resource-group $(aksazureresourcegroup) --name $(aksname) --overwrite-existing
+#       echo $(cat /home/vsts/.kube/config) | base64 -w 0 > kubeconfig.txt
+#       echo "##vso[task.setvariable variable=kubeconfig]$(cat kubeconfig.txt)"
+#     workingDirectory: '$(System.DefaultWorkingDirectory)'
 
 - task: KubernetesManifest@0
   displayName: Deploy to Kubernetes cluster
@@ -203,7 +219,7 @@ steps:
     scriptType: 'bash'
     scriptLocation: 'inlineScript'
     inlineScript: |
-      az aks get-credentials --resource-group $(azureresourcegroup) --name $(aksname)
+      az aks get-credentials --resource-group $(aksazureresourcegroup) --name $(aksname)
       helm repo add haproxytech https://haproxytech.github.io/helm-charts
       helm repo update
       helm upgrade --install kubernetes-ingress haproxytech/kubernetes-ingress --create-namespace --namespace haproxy-controller --set controller.service.type=LoadBalancer
@@ -213,7 +229,7 @@ steps:
   inputs:
     connectionType: 'Azure Resource Manager'
     azureSubscriptionEndpoint: $(azureserviceconnection)
-    azureResourceGroup: $(azureresourcegroup)
+    azureResourceGroup: $(aksazureresourcegroup)
     kubernetesCluster: $(aksname)
     kubernetesServiceEndpoint: $(kubernetesserviceconnection)
     command: 'get'
@@ -229,6 +245,15 @@ steps:
     script: |
       curl -v http://${GETEXTERNALIP_KUBECTLOUTPUT}
   displayName: 'Curl Test'
+
+# - task: TerraformTaskV4@4
+#   inputs:
+#     provider: 'azurerm'
+#     command: 'destroy'
+#     workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
+#     commandOptions: '-auto-approve -var "client_id=$(ARM_CLIENT_ID)" -var "client_secret=$(ARM_CLIENT_SECRET)"'
+#     environmentServiceNameAzureRM: 'serviceconnection1'
+#   displayName: Terraform destroy
 
 - task: PublishBuildArtifacts@1
   inputs:
