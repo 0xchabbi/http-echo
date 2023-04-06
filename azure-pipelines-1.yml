@@ -43,12 +43,10 @@ steps:
       echo "##vso[task.setvariable variable=ARM_ADO_TOKEN;isOutput=true]$(Adotoken)"
   displayName: 'Set pipeline variables'
 
-- task: AzureCLI@2
+- task: Bash@3
   inputs:
-    azureSubscription: $(azureSubscriptionid)
-    scriptType: 'bash'
-    scriptLocation: 'inlineScript'
-    inlineScript: |
+    targetType: 'inline'
+    script: |
       az login --service-principal -u $(Clientid) -p $(Clientsecret) --tenant $(tenantid)
       az account set --subscription '$(azureSubscriptionid)'
       az acr login --name '$(acrname)'
